@@ -29,9 +29,14 @@ const Navbar = () => {
   return (
     <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
       <div className="container">
-        <Link to="/" className="logo">
-          AI角色扮演
-        </Link>
+        <div className="logo-container">
+          <div className="logo">
+            AI角色扮演
+          </div>
+          <Link to="/" className="home-link">
+            <i className="fas fa-home"></i> 返回主页
+          </Link>
+        </div>
         
         <form className="search-bar" onSubmit={handleSearch}>
           <input

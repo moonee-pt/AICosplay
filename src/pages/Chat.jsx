@@ -11,6 +11,17 @@ const Chat = () => {
   const [character, setCharacter] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  // 监听窗口大小变化，判断是否为移动端
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // 模拟角色数据
   const charactersData = [
@@ -18,28 +29,28 @@ const Chat = () => {
       id: 'harry-potter',
       name: '哈利波特',
       bio: '魔法世界的年轻巫师，勇敢正直，擅长黑魔法防御术。来自霍格沃茨魔法学校的格兰芬多学院。',
-      avatar: 'https://placehold.co/300x300/e0f7fa/000000?text=哈利波特',
+      avatar: 'https://images.unsplash.com/photo-1518946222227-364f22132616?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
       skills: ['魔法知识专家', '黑魔法防御', '魁地奇球员', '快速思考者']
     },
     {
       id: 'sherlock-holmes',
       name: '夏洛克·福尔摩斯',
       bio: '世界上最著名的侦探，拥有非凡的观察力和推理能力，善于解决复杂的犯罪案件。',
-      avatar: 'https://placehold.co/300x300/e0f7fa/000000?text=夏洛克',
+      avatar: 'https://images.unsplash.com/photo-1574737489663-170735d1449f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
       skills: ['逻辑推理', '观察力', '演绎法', '化学知识']
     },
     {
       id: 'albert-einstein',
       name: '阿尔伯特·爱因斯坦',
       bio: '20世纪最伟大的物理学家之一，相对论的创立者，对现代物理学的发展产生了深远影响。',
-      avatar: 'https://placehold.co/300x300/e0f7fa/000000?text=爱因斯坦',
+      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
       skills: ['理论物理学', '创新思维', '数学', '哲学']
     },
     {
       id: 'marie-curie',
       name: '玛丽·居里',
       bio: '著名物理学家和化学家，首位获得两次诺贝尔奖的科学家，对放射性研究做出了开创性贡献。',
-      avatar: 'https://placehold.co/300x300/e0f7fa/000000?text=居里夫人',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
       skills: ['放射性研究', '化学', '物理学', '坚韧不拔']
     }
   ];
@@ -58,7 +69,7 @@ const Chat = () => {
         sender: 'ai',
         text: welcomeMessages[selectedCharacter?.id] || '你好！我是你的AI助手。',
         timestamp: new Date(),
-        avatar: selectedCharacter?.avatar || 'https://placehold.co/300x300/e0f7fa/000000?text=角色'
+        avatar: selectedCharacter?.avatar || 'https://images.unsplash.com/photo-1518946222227-364f22132616?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
       }
     ];
   };
@@ -68,6 +79,14 @@ const Chat = () => {
     const selectedCharacter = charactersData.find(c => c.id === characterId) || charactersData[0];
     setCharacter(selectedCharacter);
     setMessages(getInitialMessages(selectedCharacter));
+    
+    // 页面加载时滚动到顶部
+    setTimeout(() => {
+      const chatMessagesContainer = document.getElementById('chat-messages');
+      if (chatMessagesContainer) {
+        chatMessagesContainer.scrollTop = 0;
+      }
+    }, 100);
   }, [characterId]);
 
   // 生成AI回复
@@ -120,7 +139,7 @@ const Chat = () => {
       sender: 'user',
       text: messageText,
       timestamp: new Date(),
-      avatar: 'https://placehold.co/300x300/90caf9/000000?text=用户'
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -151,8 +170,9 @@ const Chat = () => {
   }
 
   return (
-    <div className="chat-container">
-      <ChatSidebar character={character} />
+    <div className={`chat-container ${isMobile ? 'mobile' : ''}`}>
+      {/* 移动端不显示侧边栏，改为通过详情按钮显示 */}
+      {!isMobile && <ChatSidebar character={character} />}
       <div className="chat-main">
         <ChatHeader character={character} />
         <ChatMessages messages={messages} isTyping={isTyping} />
