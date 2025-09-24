@@ -1,14 +1,11 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
 import HeroSection from '../components/HeroSection';
 import CharactersSection from '../components/CharactersSection';
 import FeaturesSection from '../components/FeaturesSection';
-import Footer from '../components/Footer';
 
 const Home = () => {
   return (
     <div className="home-page">
-      <Navbar />
       <HeroSection />
       <CharactersSection />
       <FeaturesSection />
@@ -45,8 +42,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-      
-      <Footer />
     </div>
   );
 };

@@ -197,7 +197,7 @@ body {
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 30px;
 }
 
 .logo {
@@ -825,6 +825,7 @@ main {
 
 .character-info {
     padding: 20px;
+    margin-top: 10px;
     text-align: center;
     background-color: white;
     border-bottom: 1px solid #e0e0e0;
@@ -1148,7 +1149,7 @@ main {
 }
 
 .message.user .message-content {
-    background-color: #2196F3;
+    background-color: #90CAF9;
     color: #333;
 }
 
@@ -1537,6 +1538,82 @@ main {
     100% { opacity: 0.2; }
 }
 
+/* 播放按钮样式 */
+.play-audio-btn {
+    background: none;
+    color: #666;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 8px;
+    padding: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.play-audio-btn.playing {
+    color: #f44336;
+}
+
+/* 悬停提示文本样式 */
+.play-audio-btn .hover-text {
+    position: absolute;
+    top: 100%;
+    left: 100%;
+    transform: translate(-100%, 0);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    margin-left: 52px;
+    margin-top: -62px;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .play-audio-btn .hover-text {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+}
+
+/* 确保按钮与文本对齐 */
+.message.ai .message-content {
+    display: flex;
+    align-items: center;
+}
+
+.message.ai .message-content p {
+    margin: 0;
+    flex: 1;
+}
+
+/* 响应式播放按钮 */
+@media (max-width: 768px) {
+    .play-audio-btn {
+        font-size: 16px;
+        margin-left: 6px;
+        padding: 2px;
+    }
+}
+
+/* 响应式播放按钮 */
+@media (max-width: 768px) {
+    .play-audio-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+        margin-left: 4px;
+        margin-right: 4px;
+    }
+}
+
 .hero h1, .hero p {
     animation: fadeIn 0.8s ease forwards;
 }
@@ -1623,4 +1700,58 @@ main {
     display: flex;
     align-items: center;
     padding: 20px;
+}
+
+/* 返回顶部按钮样式 */
+.back-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  transform: translateY(20px);
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background-color: #4338ca;
+  transform: translateY(-3px);
+}
+
+.back-to-top:active {
+  transform: translateY(0);
+}
+
+/* 导航栏与内容区域的分隔线 */
+.navbar {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* 聊天界面与导航栏的分隔线 */
+.chat-container {
+  border-top: 1px solid #111;
+}
+
+/* 聊天界面优化 - 增加顶部间距 */
+
+
+.chat-header {
+  border-bottom: 1px solid #111;
+  padding-top: 30px; /* 增加聊天头部内部的顶部间距 */
 }

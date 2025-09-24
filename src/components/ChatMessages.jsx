@@ -1,6 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { textToSpeech, playAudio, stopAudio } from '../services/ttsService';
 
 const ChatMessages = ({ messages, isTyping }) => {
+  // 跟踪当前正在播放的消息索引
+  const [playingMessage, setPlayingMessage] = useState(null);
+  // 跟踪音频控制对象
+  const [audioControl, setAudioControl] = useState(null);
+  // 跟踪每条消息的播放状态
+  const [playingStatus, setPlayingStatus] = useState(new Map());
+  // 跟踪当前悬停的按钮索引
+  const [hoveredButton, setHoveredButton] = useState(null);
 
   // 格式化时间（消息内时间）
   const formatTime = (date) => {
@@ -40,6 +49,89 @@ const ChatMessages = ({ messages, isTyping }) => {
     return timeDiff > 5;
   };
 
+  // 处理播放音频 - 简化版本，确保能播放一遍
+  const handlePlayAudio = async (text, messageIndex) => {
+    try {
+      // 检查是否正在播放当前消息
+      const isCurrentlyPlaying = playingMessage === messageIndex && audioControl;
+      
+      // 如果当前正在播放同一消息，则停止播放
+      if (isCurrentlyPlaying) {
+        stopAudio(audioControl);
+        setPlayingMessage(null);
+        setAudioControl(null);
+        setPlayingStatus(prev => new Map(prev).set(messageIndex, false));
+        return;
+      }
+
+      // 停止其他正在播放的音频
+      if (audioControl) {
+        stopAudio(audioControl);
+        // 立即重置播放状态
+        setPlayingMessage(null);
+        setAudioControl(null);
+        if (playingMessage !== null) {
+          setPlayingStatus(prev => new Map(prev).set(playingMessage, false));
+        }
+      }
+
+      // 设置当前播放的消息状态
+      setPlayingMessage(messageIndex);
+      setPlayingStatus(prev => new Map(prev).set(messageIndex, true));
+
+      // 获取音频数据
+      const audioData = await textToSpeech(text);
+      
+      // 再次检查状态
+      if (playingMessage !== messageIndex) {
+        setPlayingStatus(prev => new Map(prev).set(messageIndex, false));
+        return;
+      }
+      
+      // 播放音频并设置结束回调
+      const control = await playAudio(audioData, () => {
+        // 播放结束后重置状态
+        if (playingMessage === messageIndex) {
+          setPlayingMessage(null);
+          setAudioControl(null);
+          setPlayingStatus(prev => new Map(prev).set(messageIndex, false));
+        }
+      });
+      
+      // 设置控制对象
+      setAudioControl(control);
+      
+      // 超时处理，确保音频能播放完毕
+      setTimeout(() => {
+        if (playingMessage === messageIndex && audioControl) {
+          stopAudio(audioControl);
+          setPlayingMessage(null);
+          setAudioControl(null);
+          setPlayingStatus(prev => new Map(prev).set(messageIndex, false));
+        }
+      }, 60000); // 最大播放时间1分钟
+      
+    } catch (error) {
+      console.error('语音播放失败:', error);
+      // 只在当前消息仍然是我们尝试播放的消息时更新状态
+      if (playingMessage === messageIndex) {
+        setPlayingMessage(null);
+        setAudioControl(null);
+        setPlayingStatus(prev => new Map(prev).set(messageIndex, false));
+      }
+      alert('语音合成或播放失败，请稍后重试。\n错误:', error.message);
+    }
+  };
+
+  // 组件卸载时清理音频
+  useEffect(() => {
+    return () => {
+      if (audioControl) {
+        stopAudio(audioControl);
+      }
+    };
+  }, [audioControl]);
+
   return (
     <div className="chat-messages" id="chat-messages">
       {messages.map((message, index) => (
@@ -61,6 +153,22 @@ const ChatMessages = ({ messages, isTyping }) => {
               <p>{message.text}</p>
               {/* 移除每条消息单独显示的时间 */}
             </div>
+            {/* 只有AI消息才显示播放按钮 */}
+            {message.sender === 'ai' && (
+              <button 
+                className={`play-audio-btn ${playingStatus.get(index) ? 'playing' : ''}`}
+                onClick={() => handlePlayAudio(message.text, index)}
+                onMouseEnter={() => setHoveredButton(index)}
+                onMouseLeave={() => setHoveredButton(null)}
+              >
+                {playingStatus.get(index) ? '🔇' : '🔊'}
+                {hoveredButton === index && (
+                  <span className="hover-text">
+                    {playingStatus.get(index) ? '点击暂停' : '双击播放'}
+                  </span>
+                )}
+              </button>
+            )}
           </div>
         </React.Fragment>
       ))}
@@ -81,8 +189,6 @@ const ChatMessages = ({ messages, isTyping }) => {
           </div>
         </div>
       )}
-      
-
     </div>
   );
 };

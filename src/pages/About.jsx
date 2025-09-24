@@ -1,10 +1,8 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
 
 const About = () => {
   return (
     <div className="about-page">
-      <Navbar />
       <section className="about-section">
         <div className="container">
           <h1>关于我们</h1>

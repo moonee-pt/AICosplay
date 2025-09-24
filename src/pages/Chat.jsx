@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import ChatSidebar from '../components/ChatSidebar';
 import ChatHeader from '../components/ChatHeader';
@@ -12,6 +12,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const scrollTimeoutRef = useRef(null);
 
   // 监听窗口大小变化，判断是否为移动端
   useEffect(() => {
@@ -75,18 +76,48 @@ const Chat = () => {
   };
 
   useEffect(() => {
+    // 清除之前的定时器，避免多次执行
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    
     // 查找选中的角色
     const selectedCharacter = charactersData.find(c => c.id === characterId) || charactersData[0];
     setCharacter(selectedCharacter);
     setMessages(getInitialMessages(selectedCharacter));
     
-    // 页面加载时滚动到顶部
-    setTimeout(() => {
-      const chatMessagesContainer = document.getElementById('chat-messages');
-      if (chatMessagesContainer) {
-        chatMessagesContainer.scrollTop = 0;
+    // 使用多层保障策略确保滚动到顶部
+    const scrollToTop = () => {
+      const container = document.getElementById('chat-messages');
+      if (container) {
+        container.scrollTop = 0;
       }
-    }, 100);
+    };
+    
+    // 1. 立即尝试滚动
+    scrollToTop();
+    
+    // 2. 使用requestAnimationFrame确保在下一帧执行
+    requestAnimationFrame(() => {
+      scrollToTop();
+    });
+    
+    // 3. 添加一个小延迟再次尝试，确保DOM完全渲染
+    scrollTimeoutRef.current = setTimeout(() => {
+      scrollToTop();
+      
+      // 4. 最后再用requestAnimationFrame确认一次
+      requestAnimationFrame(() => {
+        scrollToTop();
+      });
+    }, 200);
+    
+    // 组件卸载时清除定时器
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
   }, [characterId]);
 
   // 生成AI回复
