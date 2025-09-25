@@ -1,0 +1,103 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    line-height: 1.6;
+    color: #e0e0e0;
+    background-color: #ffffff;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(33, 150, 243, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(33, 150, 243, 0.1) 0%, transparent 50%);
+    background-attachment: fixed;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: all 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+    color: white;
+    box-shadow: 0 4px 20px rgba(33, 150, 243, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1976D2, #1565C0);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(33, 150, 243, 0.4);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: #90CAF9;
+    border: 2px solid #2196F3;
+}
+
+.btn-secondary:hover {
+    background-color: #4a87e4;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn.chat-btn {
+    background-color: #2196F3;
+    color: white;
+    margin-top: 15px;
+    padding: 10px 20px;
+}
+
+.header-actions .chat-btn:hover {
+    background-color: #f5f5f5;
+}
+
+.btn.chat-btn:hover {
+    background-color: #1976D2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.character-btn {
+    background-color: #2196F3;
+    color: white;
+    margin: 15px auto 25px;
+    padding: 10px 20px;
+    display: inline-block;
+}

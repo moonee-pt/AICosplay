@@ -152,23 +152,27 @@ const ChatMessages = ({ messages, isTyping }) => {
             <div className="message-content">
               <p>{message.text}</p>
               {/* 移除每条消息单独显示的时间 */}
+              {/* 只有AI消息才显示播放按钮 */}
+              {message.sender === 'ai' && (
+                <button 
+                  className={`play-audio-btn hollow-icon ${playingStatus.get(index) ? 'playing' : ''}`}
+                  onClick={() => handlePlayAudio(message.text, index)}
+                  onMouseEnter={() => setHoveredButton(index)}
+                  onMouseLeave={() => setHoveredButton(null)}
+                >
+                  {playingStatus.get(index) ? 
+                      <img src="/src/assets/img/voice_playing.png" alt="正在播放" width="18" height="18" />
+                    : 
+                      <img src="/src/assets/img/audio.png" alt="播放" width="18" height="18" />
+                    }
+                  {hoveredButton === index && (
+                    <span className="hover-text">
+                      {playingStatus.get(index) ? '点击暂停' : '点击播放'}
+                    </span>
+                  )}
+                </button>
+              )}
             </div>
-            {/* 只有AI消息才显示播放按钮 */}
-            {message.sender === 'ai' && (
-              <button 
-                className={`play-audio-btn ${playingStatus.get(index) ? 'playing' : ''}`}
-                onClick={() => handlePlayAudio(message.text, index)}
-                onMouseEnter={() => setHoveredButton(index)}
-                onMouseLeave={() => setHoveredButton(null)}
-              >
-                {playingStatus.get(index) ? '🔇' : '🔊'}
-                {hoveredButton === index && (
-                  <span className="hover-text">
-                    {playingStatus.get(index) ? '点击暂停' : '双击播放'}
-                  </span>
-                )}
-              </button>
-            )}
           </div>
         </React.Fragment>
       ))}

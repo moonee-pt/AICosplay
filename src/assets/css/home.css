@@ -1,0 +1,246 @@
+/* 英雄区域样式 */
+.hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 20px 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    overflow: hidden;
+    width: 100%;
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://placehold.co/1920x1080/333/fff?text=AI+Role+Play') center/cover no-repeat;
+    opacity: 0.1;
+    z-index: 0;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.hero h1 i {
+    margin-right: 15px;
+    color: #fff;
+}
+
+.hero-decorations {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 60px;
+    opacity: 0.8;
+}
+
+.hero-decorations i {
+    font-size: 48px;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    animation: float 3s ease-in-out infinite;
+}
+
+.hero-decorations i:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.hero-decorations i:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.hero-decorations i:nth-child(3) {
+    animation-delay: 1s;
+}
+
+.hero-decorations i:nth-child(4) {
+    animation-delay: 1.5s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* 角色卡片区域样式 */
+.characters-section {
+    padding: 100px 0;
+    background-color: white;
+}
+
+.characters-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.characters-section p {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 60px;
+}
+
+.characters-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: flex-start;
+}
+
+.characters-grid .character-card {
+    flex: 0 0 calc(33.333% - 27px);
+    min-width: 280px;
+}
+
+.character-card {
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+}
+
+.character-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.character-image {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+}
+
+.character-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.character-image:hover img {
+    transform: scale(1.1);
+}
+
+.character-card h3 {
+    font-size: 1.8rem;
+    margin: 20px 0 10px;
+    color: #333;
+}
+
+.character-card p {
+    padding: 0 20px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* 功能介绍区域样式 */
+.features-section {
+    padding: 100px 0;
+    background-color: #f8f9fa;
+}
+
+.features-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.features-section p {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 60px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+}
+
+.feature-item {
+    background-color: white;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+    font-size: 36px;
+    color: white;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover .feature-icon {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6);
+}
+
+.feature-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.feature-item p {
+    color: #666;
+    font-size: 1rem;
+}

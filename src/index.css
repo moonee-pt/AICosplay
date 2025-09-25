@@ -1,19 +1,10 @@
-/* 基础样式重置，确保与自定义样式正确配合 */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* 引入分类后的CSS文件 */
+@import './assets/css/index.css';
 
+/* 基础样式设置 */
 :root {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
 }

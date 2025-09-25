@@ -22,6 +22,9 @@ npm run dev
 ```
 
 4. 服务启动后，可以通过以下URL访问：
+```bash
+curl http://localhost:3000/api/health
+```
    - 健康检查: http://localhost:3000/api/health
    - 代理端点: http://localhost:3000/api/llm
 

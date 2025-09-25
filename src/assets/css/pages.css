@@ -1,0 +1,132 @@
+/* 搜索页面样式 */
+.search-page {
+    min-height: 100vh;
+}
+
+.search-section {
+    padding: 120px 0 100px;
+}
+
+.search-section h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.search-input-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.search-input-large {
+    width: 100%;
+    max-width: 600px;
+    padding: 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 30px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-input-large:focus {
+    border-color: #4CAF50;
+}
+
+.search-btn {
+    white-space: nowrap;
+}
+
+.searching-indicator {
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+.search-results h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.no-results {
+    text-align: center;
+    color: #666;
+    padding: 50px;
+}
+
+.no-results p {
+    margin-bottom: 10px;
+}
+
+.search-hints {
+    text-align: center;
+    color: #666;
+    padding: 50px;
+}
+
+/* 关于页面样式 */
+.about-page {
+    min-height: 100vh;
+}
+
+.about-section {
+    padding: 120px 0 100px;
+}
+
+.about-section h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+    color: #333;
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.about-text h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.about-text p {
+    margin-bottom: 20px;
+    color: #666;
+    line-height: 1.8;
+}
+
+.about-text ul {
+    list-style: none;
+    margin-bottom: 20px;
+}
+
+.about-text li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    color: #666;
+}
+
+.about-text i {
+    color: #4CAF50;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+.about-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}

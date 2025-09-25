@@ -2,12 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const CharacterCard = ({ character }) => {
-  // 使用适合的卡通风格图片
+  // 直接构建聊天页面URL，不保留搜索参数
+  const chatUrl = `/chat/${character.id}`;
+  
+  // 获取角色头像
   const getCharacterImage = (id) => {
     const imageMap = {
-      'harry-potter': 'https://images.unsplash.com/photo-1518946222227-364f22132616?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-      'sherlock-holmes': 'https://images.unsplash.com/photo-1574737489663-170735d1449f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-      'albert-einstein': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+      'harry-potter': 'https://p2.ssl.qhimgs1.com/sdr/400__/t049e1c7d2ba7f49792.jpg',
+      'sherlock-holmes': 'https://p2.ssl.qhimgs1.com/sdr/400__/t015b2d215c009f83ec.gif',
+      'albert-einstein': 'https://p2.ssl.qhimgs1.com/sdr/400__/t01f405ed7c4fac3ce2.jpg',
       'marie-curie': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
     };
     return imageMap[id] || character.avatar;
@@ -21,7 +24,7 @@ const CharacterCard = ({ character }) => {
       <h3>{character.name}</h3>
       <p>{character.bio.substring(0, 100)}...</p>
       <Link 
-        to={`/chat/${character.id}`} 
+        to={chatUrl} 
         className="btn btn-primary character-btn"
       >
         <i className="fas fa-comment-dots"></i> 开始对话

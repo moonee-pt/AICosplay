@@ -1,0 +1,102 @@
+/* 动画效果 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 正在输入动画 */
+@keyframes typing {
+    0% { opacity: 0.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+
+/* 正在输入指示器样式 */
+.typing-dots {
+    display: flex;
+    gap: 5px;
+}
+
+.typing-dots span {
+    width: 8px;
+    height: 8px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.message.typing .message-content {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+
+/* 英雄区域动画 */
+.hero h1, .hero p {
+    animation: fadeIn 0.8s ease forwards;
+}
+
+.hero h1 {
+    animation-delay: 0.2s;
+}
+
+.hero p {
+    animation-delay: 0.4s;
+}
+
+.cta-buttons {
+    animation: fadeIn 0.8s ease forwards;
+    animation-delay: 0.6s;
+    opacity: 0;
+}
+
+/* 卡片和功能项动画 */
+.character-card,
+.feature-item {
+    animation: fadeIn 0.8s ease forwards;
+    opacity: 0;
+}
+
+.character-card:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.character-card:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.character-card:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.character-card:nth-child(4) {
+    animation-delay: 0.8s;
+}
+
+.feature-item:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.feature-item:nth-child(2) {
+    animation-delay: 0.4s;
+}
+
+.feature-item:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.feature-item:nth-child(4) {
+    animation-delay: 0.8s;
+}
