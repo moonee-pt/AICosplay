@@ -1,0 +1,407 @@
+/* 自定义AI页面样式 */
+.custom-ais-page {
+  padding: 100px 0 50px;
+  background-color: white;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* 页面头部 */
+.page-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  width: 100%;
+  position: relative;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  justify-content: center;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #2196F3 !important;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  background-color: #f0f8ff;
+  border: 1px solid #e3f2fd;
+  position: absolute;
+  left: 0%;
+}
+
+.back-button:hover {
+  background-color: #e3f2fd;
+  color: #1976D2 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+}
+
+.page-header h1 {
+  color: #333;
+  font-size: 2.2rem;
+  margin: 0;
+  text-align: center;
+  font-weight: 600;
+}
+
+.create-ai-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(33, 150, 243, 0.3);
+}
+
+.create-ai-btn:hover {
+  background: linear-gradient(135deg, #1976D2, #1565C0);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(33, 150, 243, 0.4);
+}
+
+/* 自定义AI网格 */
+.custom-ais-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+}
+
+/* 自定义AI卡片 */
+.custom-ai-card {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.custom-ai-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* AI头像 */
+.ai-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 15px;
+  border: 3px solid #f0f0f0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.ai-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  color: #999;
+  font-size: 32px;
+}
+
+/* AI信息 */
+.ai-info {
+  flex: 1;
+  margin-bottom: 15px;
+}
+
+.ai-info h3 {
+  margin: 0 0 5px 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.ai-identity {
+  color: #2196F3;
+  font-weight: 500;
+  margin: 0 0 10px 0;
+  font-size: 14px;
+}
+
+.ai-bio {
+  color: #666;
+  font-size: 14px;
+  margin: 0 0 15px 0;
+  line-height: 1.5;
+}
+
+/* 技能标签 */
+.ai-skills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.skill-tag {
+  background-color: #e3f2fd;
+  color: #1976D2;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.skill-more {
+  background-color: #f5f5f5;
+  color: #666;
+  padding: 4px 8px;
+  border-radius: 15px;
+  font-size: 12px;
+}
+
+/* AI操作按钮 */
+.ai-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-btn {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.chat-btn:hover {
+  background-color: #1976D2;
+  transform: translateY(-2px);
+}
+
+/* 操作下拉菜单 */
+.action-dropdown {
+  position: relative;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin: -10px -90px 0 ;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  display: none;
+  min-width: 120px;
+}
+
+/* 下拉菜单现在通过React状态控制显示/隐藏，不再使用hover效果 */
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 12px 15px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #555;
+}
+
+.dropdown-menu button:hover {
+  background-color: #f5f5f5;
+}
+
+.dropdown-menu .delete-btn {
+  color: #f44336;
+}
+
+.dropdown-menu .delete-btn:hover {
+  background-color: #ffebee;
+}
+
+/* 无自定义AI状态 */
+.no-custom-ais {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.empty-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px;
+  background-color: #f5f5f5;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  color: #ccc;
+}
+
+.no-custom-ais h2 {
+  color: #333;
+  margin: 0 0 10px 0;
+  font-size: 1.8rem;
+}
+
+.no-custom-ais p {
+  color: #666;
+  margin: 0 0 30px 0;
+  font-size: 16px;
+}
+
+.no-custom-ais .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 模态框样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 2000;
+  overflow-y: auto;
+  padding: 20px 0;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 650px;
+  margin: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  animation: modalFadeIn 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .custom-ais-page {
+    padding: 80px 0 30px;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .header-left {
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .back-button {
+    position: relative;
+    align-self: flex-start;
+    margin-bottom: 0;
+  }
+
+  .page-header h1 {
+    font-size: 1.8rem;
+    margin-top: 10px;
+  }
+  
+  .create-ai-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .custom-ais-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .no-custom-ais {
+    padding: 50px 15px;
+  }
+  
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 36px;
+  }
+  
+  .modal-content {
+    margin: 10px;
+  }
+}

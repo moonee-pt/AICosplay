@@ -7,6 +7,8 @@ import Home from './pages/Home.jsx';
 import Search from './pages/Search.jsx';
 import Chat from './pages/Chat.jsx';
 import About from './pages/About.jsx';
+import Profile from './pages/Profile.jsx';
+import CustomAIsPage from './pages/CustomAIsPage.jsx';
 
 // 创建一个包装组件来处理条件渲染
 const AppContent = () => {
@@ -44,6 +46,8 @@ const AppContent = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/chat/:characterId" element={<Chat />} />
           <Route path="/about" element={<About />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/custom-ais" element={<CustomAIsPage />} />
         </Routes>
       </main>
       {showFooter && <Footer />}

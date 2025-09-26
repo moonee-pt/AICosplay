@@ -1,10 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CharacterDetailModal from './CharacterDetailModal';
 
-const ChatHeader = ({ character }) => {
+const ChatHeader = ({ character, isFavorited, onToggleFavorite, onEdit, onClearChat }) => {
   const navigate = useNavigate();
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // 检测是否为移动设备
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // 初始化检测
+    checkIsMobile();
+    
+    // 监听窗口大小变化
+    window.addEventListener('resize', checkIsMobile);
+    
+    // 清理事件监听
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
   const handleBack = () => {
     navigate('/');
@@ -17,7 +34,7 @@ const ChatHeader = ({ character }) => {
   return (
     <>
       <div className="chat-header">
-        <button className="back-button" onClick={handleBack}>
+        <button className="chat-back-button" onClick={handleBack}>
           <i className="fas fa-arrow-left"></i>
         </button>
         
@@ -30,15 +47,40 @@ const ChatHeader = ({ character }) => {
           <span className="character-name-small">{character?.name || '角色名称'}</span>
         </div>
         
-        <button className="detail-button" onClick={toggleDetailModal}>
-          <i className="fas fa-ellipsis-v"></i>
+        <button 
+          className={`favorite-button ${isFavorited ? 'favorited' : ''}`}
+          onClick={onToggleFavorite}
+          title={isFavorited ? '取消收藏' : '添加收藏'}
+        >
+          <i className={isFavorited ? 'fas fa-heart' : 'far fa-heart'}></i>
         </button>
+        
+        {/* 编辑按钮 - 仅当是自定义AI时显示 */}
+        {character?.isCustom && (
+          <button 
+            className="edit-button"
+            onClick={onEdit}
+            title="编辑角色"
+          >
+            <i className="fas fa-edit"></i>
+          </button>
+        )}
+        
+
+        
+        {/* 只有在移动端才显示detail button */}
+        {isMobile && (
+          <button className="detail-button" onClick={toggleDetailModal}>
+            <i className="fas fa-ellipsis-v"></i>
+          </button>
+        )}
       </div>
       
       <CharacterDetailModal 
         character={character} 
         isOpen={isDetailModalOpen} 
         onClose={toggleDetailModal}
+        onClearChat={onClearChat}
       />
     </>
   );

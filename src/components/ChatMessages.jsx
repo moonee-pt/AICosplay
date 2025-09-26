@@ -10,6 +10,8 @@ const ChatMessages = ({ messages, isTyping }) => {
   const [playingStatus, setPlayingStatus] = useState(new Map());
   // 跟踪当前悬停的按钮索引
   const [hoveredButton, setHoveredButton] = useState(null);
+  // 跟踪每条AI消息的打字效果进度
+  const [typingProgress, setTypingProgress] = useState(new Map());
 
   // 格式化时间（消息内时间）
   const formatTime = (date) => {
@@ -17,6 +19,44 @@ const ChatMessages = ({ messages, isTyping }) => {
     const minutes = date.getMinutes();
     return `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
   };
+
+  // 格式化文件大小
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  // 实现打字效果
+  useEffect(() => {
+    // 找出最新的AI消息并开始打字效果
+    const latestAIMessageIndex = messages.findLastIndex(msg => 
+      msg.sender === 'ai' && !typingProgress.has(msg.timestamp)
+    );
+
+    if (latestAIMessageIndex !== -1) {
+      const message = messages[latestAIMessageIndex];
+      const totalChars = message.text.length;
+      let currentChar = 0;
+      
+      // 初始化进度
+      setTypingProgress(prev => new Map(prev).set(message.timestamp, 0));
+      
+      // 创建打字动画
+      const typingInterval = setInterval(() => {
+        currentChar++;
+        setTypingProgress(prev => new Map(prev).set(message.timestamp, currentChar));
+        
+        if (currentChar >= totalChars) {
+          clearInterval(typingInterval);
+        }
+      }, 50); // 每个字符延迟50毫秒
+      
+      return () => clearInterval(typingInterval);
+    }
+  }, [messages, typingProgress]);
 
   // 格式化日期（中间显示的时间戳）
   const formatDate = (date) => {
@@ -148,9 +188,46 @@ const ChatMessages = ({ messages, isTyping }) => {
               className="message-avatar" 
               src={message.avatar} 
               alt={message.sender === 'ai' ? 'AI' : '用户'}
+              onClick={() => {
+                if (message.sender === 'user') {
+                  // 创建自定义事件来打开用户信息模态框
+                  const event = new CustomEvent('openUserProfile');
+                  document.dispatchEvent(event);
+                }
+              }}
+              style={message.sender === 'user' ? { cursor: 'pointer' } : {}}
             />
             <div className="message-content">
-              <p>{message.text}</p>
+              {/* 对于AI消息，实现打字效果 */}
+              {message.sender === 'ai' ? (
+                <p className="typing-text">
+                  {message.text.substring(0, typingProgress.get(message.timestamp) || message.text.length)}
+                </p>
+              ) : (
+                <>
+                  <p>{message.text}</p>
+                  {/* 显示上传的文件 */}
+                  {message.file && (
+                    <div className="message-file">
+                      {message.file.type.startsWith('image/') ? (
+                        <a href={message.file.url} target="_blank" rel="noopener noreferrer" className="file-image">
+                          <img 
+                            src={message.file.url} 
+                            alt={message.file.name} 
+                            style={{ maxWidth: '200px', maxHeight: '200px', borderRadius: '4px' }}
+                          />
+                        </a>
+                      ) : (
+                        <a href={message.file.url} target="_blank" rel="noopener noreferrer" className="file-link">
+                          <i className="fas fa-file"></i>
+                          <span>{message.file.name}</span>
+                          <span className="file-size">{formatFileSize(message.file.size)}</span>
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
               {/* 移除每条消息单独显示的时间 */}
               {/* 只有AI消息才显示播放按钮 */}
               {message.sender === 'ai' && (

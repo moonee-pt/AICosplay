@@ -1,0 +1,481 @@
+.custom-ai-creator {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.custom-ai-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+  color: white;
+}
+
+.custom-ai-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.custom-ai-form {
+  padding: 25px;
+}
+
+/* 表单组样式 */
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: white;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #2196F3;
+  box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* 头像上传样式 */
+.avatar-group {
+  text-align: center;
+}
+
+.avatar-upload-wrapper {
+  display: inline-block;
+}
+
+.avatar-preview {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #f0f0f0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+
+.avatar-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  color: #999;
+  font-size: 48px;
+}
+
+.avatar-upload-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.avatar-preview:hover .avatar-upload-overlay {
+  opacity: 1;
+}
+
+.avatar-upload-label {
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.avatar-upload-label i {
+  font-size: 24px;
+}
+
+/* 技能输入样式 */
+.skills-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skill-input-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.skill-input-group input {
+  flex: 1;
+}
+
+.remove-skill-btn,
+.add-skill-btn {
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+.remove-skill-btn:hover {
+  background-color: #f44336;
+  border-color: #f44336;
+  color: white;
+}
+
+.add-skill-btn:hover {
+  background-color: #2196F3;
+  border-color: #2196F3;
+  color: white;
+}
+
+/* 声音选项样式（旧版） - 保留用于兼容性 */
+.voice-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.voice-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.voice-option.selected {
+  border-color: #2196F3;
+  background-color: #e3f2fd;
+}
+
+.select-voice-btn {
+  flex: 1;
+  padding: 10px 15px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  color: #333;
+}
+
+.select-voice-btn:hover {
+  color: #2196F3;
+}
+
+.preview-voice-btn {
+  padding: 10px 15px;
+  background-color: #f0f0f0;
+  border: 2px solid #e0e0e0;
+  color: #666;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.preview-voice-btn:hover {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+/* 声音下拉框样式（新版） */
+.voice-dropdown-container {
+  position: relative;
+  width: 100%;
+}
+
+/* 已选声音显示 */
+.selected-voice-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 15px;
+  border: 2px solid #2196F3;
+  border-radius: 10px;
+  background-color: #e3f2fd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.selected-voice-text {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+.change-voice-btn {
+  background: none;
+  border: none;
+  color: #2196F3;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.3s ease;
+}
+
+.change-voice-btn:hover {
+  transform: rotate(180deg);
+}
+
+/* 选择声音下拉按钮 */
+.select-voice-dropdown-btn {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+  color: #666;
+  font-family: inherit;
+}
+
+.select-voice-dropdown-btn:hover {
+  border-color: #2196F3;
+  color: #333;
+}
+
+/* 下拉菜单 */
+.voice-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 8px;
+  background-color: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 1000;
+}
+
+/* 下拉菜单项 */
+.voice-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.3s ease;
+}
+
+.voice-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.voice-dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* 声音试听区域 */
+.voice-preview-section {
+  flex: 1;
+}
+
+/* 下拉菜单中的试听按钮 */
+.preview-voice-dropdown-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  color: #333;
+  font-family: inherit;
+}
+
+.preview-voice-dropdown-btn:hover {
+  color: #2196F3;
+}
+
+.preview-voice-dropdown-btn i {
+  font-size: 18px;
+}
+
+/* 下拉菜单中的+号选择按钮 */
+.select-voice-plus-btn {
+  padding: 8px 12px;
+  background-color: #2196F3;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.select-voice-plus-btn:hover {
+  background-color: #1976D2;
+  transform: scale(1.05);
+}
+
+/* 表单操作按钮 */
+.form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.form-actions .btn {
+  flex-shrink: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .custom-ai-creator {
+    margin: 0 15px;
+    max-width: none;
+  }
+  
+  .custom-ai-form {
+    padding: 20px;
+  }
+  
+  .form-actions {
+    justify-content: center;
+  }
+  
+  .form-actions .btn {
+    flex: 1;
+    min-width: 120px;
+  }
+  
+  /* 响应式声音选项 - 旧版 */
+  .voice-option {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .preview-voice-btn {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+  }
+  
+  /* 响应式声音下拉框 - 新版 */
+  .voice-dropdown-container {
+    width: 100%;
+  }
+  
+  .selected-voice-display,
+  .select-voice-dropdown-btn {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+  
+  .selected-voice-text {
+    font-size: 15px;
+  }
+  
+  .voice-dropdown {
+    position: fixed;
+    top: auto;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    max-height: 60vh;
+    overflow-y: auto;
+    margin-top: 0;
+    border-radius: 12px;
+    box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.15);
+  }
+  
+  .voice-dropdown-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .preview-voice-dropdown-btn {
+    padding: 8px 12px;
+    font-size: 15px;
+  }
+  
+  .select-voice-plus-btn {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+}

@@ -30,6 +30,114 @@
         padding: 15px;
     }
     
+    /* 移动端特定 - 确保角色显示区域居中 */
+    .chat-header {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    /* 返回按钮基础样式 - 网页端和移动端共用 */
+    .chat-back-button {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease;
+        z-index: 2;
+    }
+    
+    /* 聊天界面返回按钮图标样式 */
+    .chat-back-button i {
+        color: black;
+        font-size: 16px;
+    }
+    
+    /* 悬停效果 */
+    .chat-back-button:hover {
+        transform: translateX(-3px);
+    }
+    
+    /* 点击效果 */
+    .chat-back-button:active {
+        transform: scale(0.95);
+    }
+    
+    /* 移动端位置样式 */
+    @media (max-width: 768px) {
+        .chat-back-button {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .chat-back-button:hover {
+            transform: translateY(-50%) translateX(-3px);
+        }
+        
+        .chat-back-button:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+    }
+    
+    /* 网页端位置样式 */
+    @media (min-width: 769px) {
+        .chat-back-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .chat-back-button:hover {
+            transform: translateY(-50%) translateX(-3px);
+        }
+        
+        .chat-back-button:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+    }
+    
+    /* 确保收藏按钮在右上角 */
+    .favorite-button {
+        position: absolute;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+    }
+    
+    /* 确保编辑按钮位置适当 */
+    .edit-button {
+        position: absolute;
+        right: 80px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+    }
+    
+    /* 确保详情按钮位置适当 */
+    .detail-button {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+    }
+    
+    /* 确保角色显示区域居中 */
+    .character-display {
+        position: static;
+        transform: none;
+        z-index: 1;
+        margin: 0 auto;
+    }
+    
     .chat-messages {
         padding: 15px;
         gap: 15px;

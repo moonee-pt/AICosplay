@@ -1,31 +1,46 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import ChatSidebar from '../components/ChatSidebar';
 import ChatHeader from '../components/ChatHeader';
 import ChatMessages from '../components/ChatMessages';
 import ChatInput from '../components/ChatInput';
+import CustomAICreator from '../components/CustomAICreator';
 import { callLLMApi, buildCharacterPrompt, API_CONFIG } from '../services/apiService';
+
+// 格式化文件大小
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+import { 
+  getFavorites, 
+  toggleFavoriteCharacter, 
+  updateChatHistory,
+  getCustomAIs,
+  saveCustomAIs,
+  getChatMessages,
+  saveChatMessages,
+  clearChatMessages,
+  getUserInfo,
+  saveUserInfo
+} from '../utils/storage';
 
 const Chat = () => {
   const { characterId } = useParams();
-  const location = useLocation();
+  const navigate = useNavigate();
   const [character, setCharacter] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const scrollTimeoutRef = useRef(null);
+  const [userInfo, setUserInfo] = useState(null);
 
-  // 监听窗口大小变化，判断是否为移动端
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // 模拟角色数据
+  // 角色数据
   const charactersData = [
     {
       id: 'harry-potter',
@@ -52,13 +67,68 @@ const Chat = () => {
       id: 'marie-curie',
       name: '玛丽·居里',
       bio: '著名物理学家和化学家，首位获得两次诺贝尔奖的科学家，对放射性研究做出了开创性贡献。',
-      avatar: 'https://p5.ssl.qhimgs1.com/sdr/400__/t04087d1a4601d76db5.png',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
       skills: ['放射性研究', '化学', '物理学', '坚韧不拔']
     }
   ];
 
-  // 模拟初始消息
+  // 监听窗口大小
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // 获取用户信息并监听用户信息更新事件
+  useEffect(() => {
+    // 获取用户信息
+    const info = getUserInfo();
+    setUserInfo(info);
+
+    // 监听用户信息更新事件
+    const handleUserInfoUpdate = (event) => {
+      if (event.detail && event.detail.userInfo) {
+        setUserInfo(event.detail.userInfo);
+        // 更新所有现有消息的用户头像
+        setMessages(prev => prev.map(msg => 
+          msg.sender === 'user' 
+            ? { ...msg, avatar: event.detail.userInfo.avatar } 
+            : msg
+        ));
+      }
+    };
+
+    // 监听打开用户信息模态框的事件
+    const handleOpenUserProfile = () => {
+      // 跳转到用户信息页面
+      navigate('/profile');
+    };
+
+    // 添加事件监听器
+    document.addEventListener('userInfoUpdated', handleUserInfoUpdate);
+    document.addEventListener('openUserProfile', handleOpenUserProfile);
+
+    return () => {
+      // 移除事件监听器
+      document.removeEventListener('userInfoUpdated', handleUserInfoUpdate);
+      document.removeEventListener('openUserProfile', handleOpenUserProfile);
+    };
+  }, [navigate]);
+
+  // 获取初始消息
   const getInitialMessages = (selectedCharacter) => {
+    // 检查是否为自定义AI
+    if (selectedCharacter?.isCustom) {
+      return [
+        {
+          sender: 'ai',
+          text: `你好！我是${selectedCharacter.name}。我可以为你提供帮助！`,
+          timestamp: new Date(),
+          avatar: selectedCharacter.avatar
+        }
+      ];
+    }
+
     const welcomeMessages = {
       'harry-potter': '你好！我是哈利波特。欢迎来到魔法世界！有什么我可以帮助你的吗？',
       'sherlock-holmes': '晚上好，亲爱的朋友。我是夏洛克·福尔摩斯。有什么谜题需要我帮你解决吗？',
@@ -76,149 +146,273 @@ const Chat = () => {
     ];
   };
 
+  // 初始化角色和消息
   useEffect(() => {
-    // 清除之前的定时器，避免多次执行
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    
+    // 首先检查是否为自定义AI
+    let selectedCharacter = null;
+    if (characterId && characterId.startsWith('custom-ai-')) {
+      const customAIs = getCustomAIs();
+      selectedCharacter = customAIs.find(ai => ai.id === characterId);
     }
     
-    // 查找选中的角色
-    const selectedCharacter = charactersData.find(c => c.id === characterId) || charactersData[0];
+    // 如果不是自定义AI或未找到，使用预定义角色
+    if (!selectedCharacter) {
+      selectedCharacter = charactersData.find(c => c.id === characterId) || charactersData[0];
+    }
+    
     setCharacter(selectedCharacter);
-    setMessages(getInitialMessages(selectedCharacter));
     
-    // 检查URL参数中是否有搜索词q
-    const params = new URLSearchParams(location.search);
-    const searchQuery = params.get('q');
-    if (searchQuery) {
-      // 可以在这里处理搜索词，但不要自动发送消息给AI
-      // 只是记录搜索词存在，不执行任何操作
-      console.log('从搜索页面进入聊天，搜索词:', searchQuery);
+    // 尝试从本地存储中恢复对话记录
+    const savedMessages = getChatMessages(selectedCharacter.id);
+    if (savedMessages && savedMessages.length > 0) {
+      setMessages(savedMessages);
+    } else {
+      // 如果没有保存的记录，使用初始消息
+      setMessages(getInitialMessages(selectedCharacter));
     }
     
-    // 使用多层保障策略确保滚动到顶部
+    // 检查收藏状态
+    const favorites = getFavorites();
+    setIsFavorited(!!favorites.find(f => f.id === selectedCharacter.id));
+    
+    // 滚动到顶部
     const scrollToTop = () => {
       const container = document.getElementById('chat-messages');
-      if (container) {
-        container.scrollTop = 0;
-      }
+      if (container) container.scrollTop = 0;
     };
     
-    // 1. 立即尝试滚动
     scrollToTop();
-    
-    // 2. 使用requestAnimationFrame确保在下一帧执行
-    requestAnimationFrame(() => {
-      scrollToTop();
-    });
-    
-    // 3. 添加一个小延迟再次尝试，确保DOM完全渲染
+    requestAnimationFrame(scrollToTop);
     scrollTimeoutRef.current = setTimeout(() => {
       scrollToTop();
-      
-      // 4. 最后再用requestAnimationFrame确认一次
-      requestAnimationFrame(() => {
-        scrollToTop();
-      });
+      requestAnimationFrame(scrollToTop);
     }, 200);
     
-    // 组件卸载时清除定时器
-    return () => {
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-    };
+    return () => clearTimeout(scrollTimeoutRef.current);
   }, [characterId]);
 
-  // 生成AI回复
-  const generateAIResponse = async (userMessage) => {
-    setIsTyping(true);
+  // 编辑当前AI角色 - 在当前页面显示编辑模态框
+  const handleEditCharacter = () => {
+    if (character && character.isCustom) {
+      // 打开编辑模态框，设置要编辑的AI数据
+      setIsEditModalOpen(true);
+    }
+  };
 
+  // 关闭编辑模态框
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+  };
+
+  // 处理更新自定义AI
+  const handleUpdateCustomAI = (updatedAI) => {
     try {
-      // 构建角色提示词
-      const prompt = buildCharacterPrompt(character.name, character.bio, userMessage);
+      // 获取所有自定义AI
+      const allCustomAIs = getCustomAIs();
+      // 找到并更新当前AI
+      const updatedCustomAIs = allCustomAIs.map(ai => 
+        ai.id === updatedAI.id ? updatedAI : ai
+      );
+      // 保存更新后的自定义AI列表
+      saveCustomAIs(updatedCustomAIs);
+      // 更新当前聊天中的角色数据
+      setCharacter(updatedAI);
+      // 关闭模态框
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error('更新自定义AI失败:', error);
+      alert('更新失败，请稍后再试');
+    }
+  };
+
+  // 切换收藏
+  const handleToggleFavorite = () => {
+    if (!character) return;
+    
+    const updatedFavorites = toggleFavoriteCharacter(character);
+    setIsFavorited(!!updatedFavorites.find(f => f.id === character.id));
+  };
+
+  // 保存聊天消息到本地存储
+  const saveCurrentMessages = (currentMessages) => {
+    if (character) {
+      saveChatMessages(character.id, currentMessages);
+    }
+  };
+
+  // 生成AI回复
+  const generateAIResponse = async (userMessage, fileMessage = null) => {
+    setIsTyping(true);
+    try {
+      let prompt;
+      // 处理文件消息
+      let fileInfo = '';
+      if (fileMessage) {
+        if (fileMessage.type.startsWith('image/')) {
+          fileInfo = '\n注意：用户上传了一张图片：' + fileMessage.name + '，请提及已收到图片并根据图片内容进行回应。';
+        } else {
+          fileInfo = '\n注意：用户上传了一个文件：' + fileMessage.name + '（' + formatFileSize(fileMessage.size) + '），文件类型：' + fileMessage.type + '。';
+        }
+      }
       
-      // 调用LLM API
+      // 为自定义AI构建特殊的提示词
+      if (character.isCustom) {
+        prompt = buildCharacterPrompt(
+          character.name, 
+          character.instructions, 
+          userMessage + fileInfo, 
+          character.skills ? character.skills.join('、') : ''
+        );
+      } else {
+        prompt = buildCharacterPrompt(character.name, character.bio, userMessage + fileInfo);
+      }
       const responseText = await callLLMApi(prompt, character.name);
       
-      // 添加AI回复
-      setMessages(prev => [...prev, {
-        sender: 'ai',
-        text: responseText,
-        timestamp: new Date(),
-        avatar: character.avatar
-      }]);
+      setMessages(prev => {
+        const newMessages = [...prev, {
+          sender: 'ai',
+          text: responseText,
+          timestamp: new Date(),
+          avatar: character.avatar
+        }];
+        saveCurrentMessages(newMessages);
+        return newMessages;
+      });
       
-      // 延迟滚动到最新消息，确保DOM已更新
       setTimeout(() => {
-        const chatMessagesContainer = document.getElementById('chat-messages');
-        if (chatMessagesContainer) {
-          chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
-        }
+        const container = document.getElementById('chat-messages');
+        if (container) container.scrollTop = container.scrollHeight;
       }, 100);
     } catch (error) {
       console.error('AI回复生成失败:', error);
-      
-      // 显示错误消息给用户
       setMessages(prev => [...prev, {
         sender: 'ai',
         text: `抱歉，我暂时无法回答这个问题。错误: ${error.message}`,
         timestamp: new Date(),
         avatar: character.avatar
       }]);
-      
-      // 显示API调用错误提醒
       alert('API调用失败，请检查控制台日志了解详情\n\n当前使用的是讯飞星火API配置');
     } finally {
       setIsTyping(false);
     }
   };
 
-  // 发送用户消息
-  const handleSendMessage = (messageText) => {
+  // 发送消息
+  const handleSendMessage = (messageText, fileMessage = null) => {
+    // 使用存储的用户头像，如果没有则使用默认头像
+    const userAvatar = userInfo?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
+    
     const userMessage = {
       sender: 'user',
       text: messageText,
       timestamp: new Date(),
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+      avatar: userAvatar,
+      ...(fileMessage && { file: fileMessage })
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages(prev => {
+      const newMessages = [...prev, userMessage];
+      saveCurrentMessages(newMessages);
+      return newMessages;
+    });
     
-    // 延迟滚动到最新消息，确保DOM已更新
+    // 更新历史对话
+    updateChatHistory(character, messageText);
+    
+    // 滚动到最新消息
     setTimeout(() => {
-      const chatMessagesContainer = document.getElementById('chat-messages');
-      if (chatMessagesContainer) {
-        chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
-      }
+      const container = document.getElementById('chat-messages');
+      if (container) container.scrollTop = container.scrollHeight;
     }, 100);
     
-    generateAIResponse(messageText);
+    generateAIResponse(messageText, fileMessage);
   };
 
-  // 组件挂载时的初始化
-  useEffect(() => {
-    // 记录当前使用的API配置
-    console.log('当前使用的API配置:', {
-      provider: API_CONFIG.provider,
-      model: API_CONFIG.settings.models.doubao,
-      backendProxy: API_CONFIG.backendProxy.enabled ? API_CONFIG.backendProxy.url : '禁用'
-    });
-  }, []);
+  // 点击返回按钮
+  const handleBack = () => {
+    navigate('/');
+  };
+
+  // 清空当前对话
+  const handleClearChat = () => {
+    if (character && window.confirm('确定要清空当前对话吗？此操作不可恢复。')) {
+      // 清空本地存储中的对话记录
+      clearChatMessages(character.id);
+      // 重置消息列表为初始消息
+      setMessages(getInitialMessages(character));
+      // 滚动到顶部
+      const container = document.getElementById('chat-messages');
+      if (container) container.scrollTop = 0;
+    }
+  };
 
   if (!character) {
     return <div className="loading">加载中...</div>;
   }
 
+  // 设置聊天背景样式
+  const getChatBackgroundStyle = () => {
+    if (!character?.background) return {};
+    
+    // 检查是否为URL格式
+    const isUrl = character.background.startsWith('http://') || 
+                 character.background.startsWith('https://') ||
+                 character.background.startsWith('url(');
+    
+    if (isUrl) {
+      // 是URL，设置为背景图片
+      const url = character.background.startsWith('url(') 
+        ? character.background 
+        : `url(${character.background})`;
+      
+      return {
+        backgroundImage: url,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        backgroundColor: 'transparent'
+      };
+    } else {
+      // 是颜色值，设置为背景色
+      return {
+        backgroundColor: character.background,
+        backgroundImage: 'none'
+      };
+    }
+  };
+
   return (
     <div className={`chat-container ${isMobile ? 'mobile' : ''}`}>
-      {/* 移动端不显示侧边栏，改为通过详情按钮显示 */}
-      {!isMobile && <ChatSidebar character={character} />}
-      <div className="chat-main">
-        <ChatHeader character={character} />
+      {!isMobile && <ChatSidebar character={{
+        ...character,
+        bio: character?.isCustom && character?.background ? character.background : character?.bio
+      }} onClearChat={handleClearChat} />}
+      <div 
+        className="chat-main"
+        style={character?.isCustom ? getChatBackgroundStyle() : {}}
+      >
+        <ChatHeader 
+          character={character} 
+          isFavorited={isFavorited} 
+          onToggleFavorite={handleToggleFavorite}
+          onEdit={handleEditCharacter}
+          onClearChat={handleClearChat}
+          onBack={handleBack}
+        />
         <ChatMessages messages={messages} isTyping={isTyping} />
         <ChatInput onSendMessage={handleSendMessage} disabled={isTyping} />
       </div>
+      
+      {/* 编辑模态框 - 复用自定义AI创建器 */}
+      {isEditModalOpen && character && character.isCustom && (
+        <CustomAICreator 
+          onAddCustomAI={handleUpdateCustomAI}
+          onClose={handleCloseEditModal}
+          initialData={character}
+        />
+      )}
     </div>
   );
 };

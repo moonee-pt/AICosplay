@@ -8,7 +8,16 @@ const chatHistories = new Map();
 
 // 构建角色提示词
 export const buildCharacterPrompt = (characterName, characterBio, userMessage) => {
-  return `你是${characterName}，${characterBio}。请以${characterName}的身份回答用户的问题。用户问：${userMessage}`;
+  return `你是${characterName}，${characterBio}。请以${characterName}的身份回答用户的问题。
+重要要求：
+1. 回复必须简洁，保持在2-3句话，不超过100字
+2. 不要说多余的话，直接交流
+3. 保持自然交流的语气
+4. 模仿人物设定交流，不ooc
+5. 不知道超过人物设定的知识，如19世纪人物不应该知道ai等现代知识
+6. 不要重复说相同的话，保持交流的自然性
+
+用户说：${userMessage}`;
 };
 
 // 调用LLM API

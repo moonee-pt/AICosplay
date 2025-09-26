@@ -67,11 +67,26 @@ function bindAudioInitToUserInteraction() {
 bindAudioInitToUserInteraction();
 
 /**
- * 内部语音合成实现
+ * 根据声音类型获取对应的vcn参数
  */
-async function textToSpeechInternal(text) {
-  if (audioCache.has(text)) {
-    return audioCache.get(text);
+function getVoiceVcn(voiceType) {
+  const voiceMap = {
+    'male1': 'aisjiuxu', // 讯飞男声1
+    'female1': 'x4_yezi', // 讯飞女声1
+    'female2': 'x4_xiaoyan', // 讯飞女声2
+  };
+  return voiceMap[voiceType] || 'aisjinger'; // 默认中性声
+}
+
+/**
+ * 内部语音合成实现
+ * @param {string} text 要转换的文本
+ * @param {string} voice 声音类型
+ */
+async function textToSpeechInternal(text, voice = 'neutral') {
+  const cacheKey = `${text}_${voice}`;
+  if (audioCache.has(cacheKey)) {
+    return audioCache.get(cacheKey);
   }
 
   const date = new Date().toUTCString();
@@ -90,7 +105,7 @@ async function textToSpeechInternal(text) {
         "business": {
           "aue": "lame",
           "auf": "audio/L16;rate=16000",
-          "vcn": "x4_yezi",
+          "vcn": getVoiceVcn(voice),
           "tte": "UTF8"
         },
         "data": {
@@ -167,21 +182,39 @@ async function textToSpeechInternal(text) {
 /**
  * 对外暴露的文本转语音接口
  * @param {string} text 要转换的文本
+ * @param {string} voice 声音类型
  * @returns {Promise<AudioBuffer>} 解码后的音频缓冲区
  */
-export const textToSpeech = async (text) => {
+export const textToSpeech = async (text, voice = 'neutral') => {
   // 检查AudioContext状态
   if (!audioContext || audioContext.state !== 'running') {
     // 如果AudioContext未就绪，将任务放入等待队列
     return new Promise((resolve, reject) => {
-      pendingSpeechTask = { text, resolve, reject };
+      pendingSpeechTask = { text, voice, resolve, reject };
       // 触发交互提示（如果需要）
       bindAudioInitToUserInteraction();
     });
   }
 
   // 如果AudioContext已就绪，直接执行
-  return textToSpeechInternal(text);
+  return textToSpeechInternal(text, voice);
+};
+
+/**
+ * 试听声音
+ * @param {string} voice 声音类型
+ * @param {string} previewText 试听文本
+ * @returns {Promise<Object>} 音频控制对象
+ */
+export const previewVoice = async (voice) => {
+  const previewText = "你好，这是声音试听示例，欢迎使用自定义AI。";
+  try {
+    const audioBuffer = await textToSpeech(previewText, voice);
+    return playAudio(audioBuffer);
+  } catch (error) {
+    console.error('试听声音失败:', error);
+    throw error;
+  }
 };
 
 // 鉴权签名（保持不变）

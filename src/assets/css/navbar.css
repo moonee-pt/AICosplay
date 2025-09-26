@@ -120,8 +120,27 @@
 }
 
 .nav-links {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+}
+
+.nav-links .nav-link {
+  margin-right: 30px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav-links .nav-link:hover {
+  color: #2196F3;
+}
+
+.nav-links .nav-link i {
+  margin-right: 8px;
 }
 
 .nav-links a {
@@ -187,4 +206,91 @@
     font-size: 24px;
     cursor: pointer;
     color: #333;
+    margin-left: 20px;
+}
+
+/* 移动端头部链接容器 */
+.mobile-header-links {
+    display: none;
+    align-items: center;
+    margin-left: 10px;
+}
+
+/* 用户头像样式 */
+.user-profile {
+    position: relative;
+}
+
+.user-avatar-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+    margin-left: 20px;
+}
+
+.user-avatar-btn:hover {
+    background-color: rgba(33, 150, 243, 0.1);
+}
+
+.user-avatar-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #2196F3;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-avatar-btn:hover .user-avatar-small {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+}
+
+/* 桌面端导航链接 */
+.desktop-nav {
+    display: flex;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    /* 在移动端显示mobile-header-links */
+    .mobile-header-links {
+        display: flex;
+    }
+    
+    /* 在移动端隐藏桌面端导航 */
+    .desktop-nav {
+        display: none;
+    }
+    
+    /* 调整移动端搜索栏 */
+    .search-bar.navbar-search-bar {
+        display: none;
+    }
+    
+    /* 移动端头像样式 */
+    .user-avatar-btn.mobile-avatar {
+        margin-left: 14px;
+        margin-top: 5px;
+    }
+    
+    /* 调整移动端logo容器 */
+    .logo-container {
+        display: flex;
+        align-items: center;
+    }
+    
+    /* 调整移动端标题样式，加宽以放下所有文字 */
+    .logo {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .logo-text {
+        white-space: normal;
+        text-align: center;
+    }
 }
