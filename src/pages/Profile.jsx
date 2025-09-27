@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../assets/css/user-profile.css';
-import { 
-  getFavorites, 
-  saveFavorites, 
-  getChatHistory, 
-  clearChatHistory,
-  getUserInfo,
-  saveUserInfo
-} from '../utils/storage';
+import { getUserInfo, saveUserInfo, getFavorites, getChatHistory, clearChatMessages, saveFavorites, clearChatHistory } from '../utils/storage';
+import { getRealAvatarUrl } from '../utils/utils.js';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -47,12 +41,21 @@ const Profile = () => {
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) { // 只允许图片文件
+      // 检查文件大小（限制在500 KB以内）
+      const MAX_SIZE_IN_BYTES = 500 * 1024; // 500KB
+      if (file.size > MAX_SIZE_IN_BYTES) {
+        alert(`图片文件过大(${Math.round(file.size/1024)}KB)，请上传小于500KB的图片`);
+        return;
+      }
+      
       setAvatarFile(file);
       const reader = new FileReader();
       reader.onload = (e) => {
         setAvatarPreview(e.target.result); // 预览图赋值
       };
       reader.readAsDataURL(file); // 转为base64格式
+    } else {
+      alert('请选择有效的图片文件');
     }
   };
   
@@ -63,26 +66,33 @@ const Profile = () => {
       ? { ...userInfo, avatar: avatarPreview }
       : userInfo;
     
-    // 使用统一的存储函数保存用户信息
-    const saveSuccess = saveUserInfo(updatedUserInfo);
-    
-    if (saveSuccess) {
-      // 更新状态
-      setUserInfo(updatedUserInfo);
+    try {
+      // 使用统一的存储函数保存用户信息
+      const saveSuccess = saveUserInfo(updatedUserInfo);
       
-      // 重置头像上传状态（清空选择的文件和预览图）
-      setAvatarFile(null);
-      setAvatarPreview(null);
-      
-      // 触发用户信息更新事件，通知其他组件（如Chat组件）
-      const event = new CustomEvent('userInfoUpdated', {
-        detail: { userInfo: updatedUserInfo }
-      });
-      document.dispatchEvent(event);
-      
-      // 提示用户保存成功
-      alert('个人信息保存成功！');
-    } else {
+      if (saveSuccess) {
+        // 更新状态
+        setUserInfo(updatedUserInfo);
+        
+        // 重置头像上传状态（清空选择的文件和预览图）
+        setAvatarFile(null);
+        setAvatarPreview(null);
+        
+        // 触发用户信息更新事件，通知其他组件（如Chat组件）
+        const event = new CustomEvent('userInfoUpdated', {
+          detail: { userInfo: updatedUserInfo }
+        });
+        console.log('Profile组件触发用户信息更新事件:', event);
+        document.dispatchEvent(event);
+        
+        // 提示用户保存成功
+        alert('个人信息保存成功！');
+      } else {
+        alert('保存失败，请稍后重试。');
+      }
+    } catch (error) {
+      // 通用错误处理
+      console.error('保存用户信息时发生错误:', error);
       alert('保存失败，请稍后重试。');
     }
   };
@@ -153,7 +163,7 @@ const Profile = () => {
               {/* 头像预览区 */}
               <div className="avatar-preview">
                 <img 
-                  src={avatarPreview || userInfo.avatar} 
+                  src={avatarPreview || getRealAvatarUrl(userInfo.avatar)} 
                   alt="用户头像" 
                   className="user-avatar-large"
                   loading="lazy" // 懒加载，优化性能
@@ -222,7 +232,7 @@ const Profile = () => {
                   </button>
                   {/* 角色头像 */}
                   <img 
-                    src={fav.avatar} 
+                    src={getRealAvatarUrl(fav.avatar)} 
                     alt={fav.name} 
                     className="favorite-avatar"
                     loading="lazy"
@@ -266,7 +276,7 @@ const Profile = () => {
                 >
                   {/* 角色头像 */}
                   <img 
-                    src={chat.characterAvatar} 
+                    src={getRealAvatarUrl(chat.characterAvatar)} 
                     alt={chat.characterName} 
                     className="chat-history-avatar"
                     loading="lazy"

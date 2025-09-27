@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CharacterDetailModal from './CharacterDetailModal';
+import { getRealAvatarUrl } from '../utils/utils.js';
 
 const ChatHeader = ({ character, isFavorited, onToggleFavorite, onEdit, onClearChat }) => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const ChatHeader = ({ character, isFavorited, onToggleFavorite, onEdit, onClearC
   }, []);
 
   const handleBack = () => {
-    navigate('/');
+    navigate(-1);
   };
 
   const toggleDetailModal = () => {
@@ -40,7 +41,7 @@ const ChatHeader = ({ character, isFavorited, onToggleFavorite, onEdit, onClearC
         
         <div className="character-display">
           <img 
-            src={character?.avatar || 'https://placehold.co/300x300/e0f7fa/000000?text=角色'} 
+            src={getRealAvatarUrl(character?.avatar) || 'https://placehold.co/300x300/e0f7fa/000000?text=角色'} 
             alt={character?.name || '角色'}
             className="character-avatar-small"
           />

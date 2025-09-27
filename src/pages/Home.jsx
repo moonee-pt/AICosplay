@@ -1,13 +1,52 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import HeroSection from '../components/HeroSection';
 import CharactersSection from '../components/CharactersSection';
 import FeaturesSection from '../components/FeaturesSection';
+import { getCustomAIs } from '../utils/storage';
+import CharacterCard from '../components/CharacterCard';
+import ParticlesBackground from '../components/ParticlesBackground';
 
 const Home = () => {
+  const [customAIs, setCustomAIs] = useState([]);
+  
+  useEffect(() => {
+    // 加载用户自定义AI
+    const loadCustomAIs = () => {
+      const savedCustomAIs = getCustomAIs();
+      setCustomAIs(savedCustomAIs);
+    };
+    
+    loadCustomAIs();
+  }, []);
+  
   return (
     <div className="home-page">
       <HeroSection />
       <CharactersSection />
+      
+      {/* 用户自定义AI部分 */}
+      {customAIs.length > 0 && (
+        <section className="characters-section">
+          <ParticlesBackground particleCount={40} colors={['#60a5fa', '#a78bfa']} />
+          <div className="container">
+            <h2>我的自定义AI</h2>
+            <p>与您创建的专属AI进行交流</p>
+            <div className="characters-grid">
+              {customAIs.map(ai => (
+                <CharacterCard key={ai.id} character={{
+                  id: ai.id,
+                  name: ai.name,
+                  bio: ai.background || '这是一个自定义AI角色',
+                  avatar: ai.avatar,
+                  skills: ai.skills || []
+                }} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+      
       <FeaturesSection />
       
       {/* 关于我们部分 - 直接集成到首页 */}

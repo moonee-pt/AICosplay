@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { textToSpeech, playAudio, stopAudio } from '../services/ttsService';
+import { getRealAvatarUrl } from '../utils/utils';
+// 导入getRealAvatarUrl函数用于处理头像URL，包括sessionStorage中的头像引用
+// 在第191行和第257行中使用，确保历史消息和正在输入的消息都能显示正确的头像
+// 头像处理逻辑使用说明：
+// 1. 第3行导入了getRealAvatarUrl函数，用于统一处理头像URL
+// 2. 第191行使用该函数处理历史消息中的头像
+// 3. 第257行使用该函数处理正在输入状态的AI头像
 
 const ChatMessages = ({ messages, isTyping }) => {
   // 跟踪当前正在播放的消息索引
@@ -12,6 +19,9 @@ const ChatMessages = ({ messages, isTyping }) => {
   const [hoveredButton, setHoveredButton] = useState(null);
   // 跟踪每条AI消息的打字效果进度
   const [typingProgress, setTypingProgress] = useState(new Map());
+  // 头像更新时间戳，用于触发头像重新渲染
+  const [avatarUpdateTimestamp, setAvatarUpdateTimestamp] = useState(Date.now());
+  const avatarUpdateRef = useRef(null);
 
   // 格式化时间（消息内时间）
   const formatTime = (date) => {
@@ -57,6 +67,53 @@ const ChatMessages = ({ messages, isTyping }) => {
       return () => clearInterval(typingInterval);
     }
   }, [messages, typingProgress]);
+
+  // 监听头像更新事件，确保头像变更后能重新渲染
+  useEffect(() => {
+    const handleAvatarUpdate = (event) => {
+      console.log('ChatMessages组件接收到头像更新事件:', event.detail);
+      // 更新时间戳以触发组件重新渲染
+      setAvatarUpdateTimestamp(Date.now());
+      
+      // 强制重新加载所有头像图片
+      const reloadAvatars = () => {
+        // 检查是否已有正在进行的更新，避免频繁更新
+        if (avatarUpdateRef.current) {
+          clearTimeout(avatarUpdateRef.current);
+        }
+        
+        // 延迟执行，确保DOM已更新
+        avatarUpdateRef.current = setTimeout(() => {
+          const avatarElements = document.querySelectorAll('.chat-message-avatar');
+          avatarElements.forEach(avatar => {
+            const src = avatar.src;
+            // 添加随机参数以强制浏览器重新加载图片
+            avatar.src = src.split('?')[0] + '?t=' + Date.now();
+          });
+        }, 100);
+      };
+      
+      // 立即触发一次更新，然后在短暂延迟后再次触发
+      reloadAvatars();
+      setTimeout(reloadAvatars, 300);
+    };
+
+    // 监听常规头像更新事件
+    document.addEventListener('userAvatarUpdated', handleAvatarUpdate);
+    // 监听紧急头像更新事件（备选方案）
+    document.addEventListener('userAvatarEmergencyUpdated', handleAvatarUpdate);
+    
+    console.log('ChatMessages组件已开始监听头像更新事件');
+
+    return () => {
+      document.removeEventListener('userAvatarUpdated', handleAvatarUpdate);
+      document.removeEventListener('userAvatarEmergencyUpdated', handleAvatarUpdate);
+      if (avatarUpdateRef.current) {
+        clearTimeout(avatarUpdateRef.current);
+      }
+      console.log('ChatMessages组件已停止监听头像更新事件');
+    };
+  }, []);
 
   // 格式化日期（中间显示的时间戳）
   const formatDate = (date) => {
@@ -184,20 +241,22 @@ const ChatMessages = ({ messages, isTyping }) => {
           )}
           
           <div className={`message ${message.sender}`}>
-            <img 
-              className="message-avatar" 
-              src={message.avatar} 
-              alt={message.sender === 'ai' ? 'AI' : '用户'}
-              onClick={() => {
-                if (message.sender === 'user') {
-                  // 创建自定义事件来打开用户信息模态框
-                  const event = new CustomEvent('openUserProfile');
-                  document.dispatchEvent(event);
-                }
-              }}
-              style={message.sender === 'user' ? { cursor: 'pointer' } : {}}
-            />
-            <div className="message-content">
+            {/* 使用统一的头像处理函数 */}
+          <img 
+            key={`${message.avatar || message.sender}-${avatarUpdateTimestamp}`}
+            className="message-avatar chat-message-avatar"
+            src={getRealAvatarUrl(message.avatar)} 
+            alt={message.sender === 'ai' ? 'AI' : '用户'}
+            onClick={() => {
+              if (message.sender === 'user') {
+                // 创建自定义事件来打开用户信息模态框
+                const event = new CustomEvent('openUserProfile');
+                document.dispatchEvent(event);
+              }
+            }}
+            style={message.sender === 'user' ? { cursor: 'pointer' } : {}}
+          />
+          <div className="message-content">
               {/* 对于AI消息，实现打字效果 */}
               {message.sender === 'ai' ? (
                 <p className="typing-text">
@@ -256,9 +315,11 @@ const ChatMessages = ({ messages, isTyping }) => {
       
       {isTyping && (
         <div className="message ai typing">
+          {/* 使用统一的头像处理函数 */}
           <img 
-            className="message-avatar" 
-            src={messages[0]?.avatar || 'https://placehold.co/300x300/e0f7fa/000000?text=角色'} 
+            key={`typing-avatar-${avatarUpdateTimestamp}`}
+            className="message-avatar chat-message-avatar"
+            src={getRealAvatarUrl(messages[0]?.avatar || 'https://placehold.co/300x300/e0f7fa/000000?text=角色')} 
             alt="AI"
           />
           <div className="message-content">

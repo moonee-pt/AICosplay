@@ -1,20 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { getUserInfo } from '../utils/storage';
+import CharacterDetailModal from './CharacterDetailModal';
+import { getRealAvatarUrl } from '../utils/utils.js';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [userInfo, setUserInfo] = useState({
-    name: '访客用户',
-    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
-  });
+  const [userInfo, setUserInfo] = useState({});
 
-  // 加载用户信息
+  // 加载用户信息并监听更新
   useEffect(() => {
-    const savedUserInfo = localStorage.getItem('userInfo');
-    if (savedUserInfo) {
-      setUserInfo(JSON.parse(savedUserInfo));
-    }
+    const loadUserInfo = () => {
+      const info = getUserInfo();
+      setUserInfo(info);
+    };
+
+    // 初始加载
+    loadUserInfo();
+
+    // 监听用户信息更新事件
+    const handleUserInfoUpdate = (event) => {
+      console.log('Navbar组件接收到用户信息更新事件:', event);
+      if (event.detail && event.detail.userInfo) {
+        // 直接使用事件传递的最新用户信息
+        console.log('Navbar从事件中获取的用户信息:', event.detail.userInfo);
+        setUserInfo(event.detail.userInfo);
+      }
+    };
+
+    document.addEventListener('userInfoUpdated', handleUserInfoUpdate);
+
+    // 组件卸载时移除监听
+    return () => {
+      document.removeEventListener('userInfoUpdated', handleUserInfoUpdate);
+    };
   }, []);
 
   // 处理搜索
@@ -47,7 +67,7 @@ const Navbar = () => {
                 title={userInfo.name}
               >
                 <img 
-                  src={userInfo.avatar} 
+                  src={getRealAvatarUrl(userInfo.avatar)} 
                   alt={userInfo.name}
                   className="user-avatar-small" 
                 />
@@ -81,7 +101,7 @@ const Navbar = () => {
                 title={userInfo.name}
               >
                 <img 
-                  src={userInfo.avatar} 
+                  src={getRealAvatarUrl(userInfo.avatar)} 
                   alt={userInfo.name}
                   className="user-avatar-small" 
                 />

@@ -288,8 +288,16 @@ export const playAudio = async (audioBuffer, onEnded) => {
     };
     source.onended = handleEnded;
     
-    // 关键：在用户交互事件循环中启动播放
-    source.start(0);
+    // 关键：确保在用户交互事件循环中启动播放
+    // 使用Promise包装以确保异步播放
+    return new Promise((resolve) => {
+      // 创建微任务以确保在当前事件循环结束后执行
+      Promise.resolve().then(() => {
+        source.start(0);
+        currentAudioControl = { audioContext, source };
+        resolve(currentAudioControl);
+      });
+    });
     
     currentAudioControl = { audioContext, source };
     return currentAudioControl;

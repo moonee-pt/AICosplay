@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../assets/css/user-profile.css';
+import { saveUserInfo, getUserInfo, getFavorites, saveFavorites, getChatHistory } from '../utils/storage.js';
 
 const UserProfileModal = ({ isOpen, onClose }) => {
   // 用户信息状态
@@ -37,11 +38,11 @@ const UserProfileModal = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  // 模拟加载用户信息
+  // 加载用户信息
   const loadUserInfo = () => {
-    const savedUserInfo = localStorage.getItem('userInfo');
+    const savedUserInfo = getUserInfo();
     if (savedUserInfo) {
-      setUserInfo(JSON.parse(savedUserInfo));
+      setUserInfo(savedUserInfo);
     } else {
       // 默认用户信息
       const defaultInfo = {
@@ -53,11 +54,11 @@ const UserProfileModal = ({ isOpen, onClose }) => {
     }
   };
 
-  // 模拟加载收藏的角色
+  // 加载收藏的角色
   const loadFavorites = () => {
-    const savedFavorites = localStorage.getItem('favoriteCharacters');
-    if (savedFavorites) {
-      setFavorites(JSON.parse(savedFavorites));
+    const savedFavorites = getFavorites();
+    if (savedFavorites && savedFavorites.length > 0) {
+      setFavorites(savedFavorites);
     } else {
       // 默认收藏的角色（模拟数据）
       setFavorites([
@@ -75,11 +76,11 @@ const UserProfileModal = ({ isOpen, onClose }) => {
     }
   };
 
-  // 模拟加载历史对话
+  // 加载历史对话
   const loadChatHistory = () => {
-    const savedHistory = localStorage.getItem('chatHistory');
-    if (savedHistory) {
-      setChatHistory(JSON.parse(savedHistory));
+    const savedHistory = getChatHistory();
+    if (savedHistory && savedHistory.length > 0) {
+      setChatHistory(savedHistory);
     } else {
       // 默认历史对话（模拟数据）
       setChatHistory([
@@ -103,18 +104,17 @@ const UserProfileModal = ({ isOpen, onClose }) => {
     }
   };
 
-  // 保存用户信息
-  const saveUserInfo = () => {
-    localStorage.setItem('userInfo', JSON.stringify(userInfo));
-    // 如果有新头像文件，这里可以添加上传逻辑
-    if (avatarFile) {
-      // 模拟上传头像
-      console.log('上传头像:', avatarFile);
-      // 重置头像文件状态
-      setAvatarFile(null);
-      setAvatarPreview(null);
+  // 使用统一的保存用户信息函数
+  const handleSaveUserInfo = () => {
+    const success = saveUserInfo(userInfo);
+    if (success) {
+      // 如果有新头像文件，重置头像文件状态
+      if (avatarFile) {
+        setAvatarFile(null);
+        setAvatarPreview(null);
+      }
+      alert('用户信息已保存！');
     }
-    alert('用户信息已保存！');
   };
 
   // 处理用户信息变更
@@ -153,7 +153,7 @@ const UserProfileModal = ({ isOpen, onClose }) => {
   const removeFavorite = (characterId) => {
     const updatedFavorites = favorites.filter(fav => fav.id !== characterId);
     setFavorites(updatedFavorites);
-    localStorage.setItem('favoriteCharacters', JSON.stringify(updatedFavorites));
+    saveFavorites(updatedFavorites);
   };
 
   // 清除历史对话
@@ -229,7 +229,7 @@ const UserProfileModal = ({ isOpen, onClose }) => {
                     placeholder="请输入用户名"
                   />
                 </div>
-                <button className="save-btn" onClick={saveUserInfo}>
+                <button className="save-btn" onClick={handleSaveUserInfo}>
                   保存信息
                 </button>
               </div>

@@ -7,8 +7,13 @@ const API_URL = 'http://localhost:3000/api/llm'; // 后端代理地址
 const chatHistories = new Map();
 
 // 构建角色提示词
-export const buildCharacterPrompt = (characterName, characterBio, userMessage) => {
-  return `你是${characterName}，${characterBio}。请以${characterName}的身份回答用户的问题。
+export const buildCharacterPrompt = (characterName, characterBio, userMessage, skills) => {
+  // 如果有skills参数，说明是自定义AI，需要特殊处理
+  if (skills) {
+    return `你是${characterName}。
+${characterBio}
+${skills ? `你的技能包括：${skills}。` : ''}
+请以${characterName}的身份回答用户的问题，但不要在回复中重复你的背景设定和技能信息。
 重要要求：
 1. 回复必须简洁，保持在2-3句话，不超过100字
 2. 不要说多余的话，直接交流
@@ -18,6 +23,19 @@ export const buildCharacterPrompt = (characterName, characterBio, userMessage) =
 6. 不要重复说相同的话，保持交流的自然性
 
 用户说：${userMessage}`;
+  } else {
+    // 非自定义AI的处理逻辑
+    return `你是${characterName}，${characterBio}。请以${characterName}的身份回答用户的问题。
+重要要求：
+1. 回复必须简洁，保持在2-3句话，不超过100字
+2. 不要说多余的话，直接交流
+3. 保持自然交流的语气
+4. 模仿人物设定交流，不ooc
+5. 不知道超过人物设定的知识，如19世纪人物不应该知道ai等现代知识
+6. 不要重复说相同的话，保持交流的自然性
+
+用户说：${userMessage}`;
+  }
 };
 
 // 调用LLM API

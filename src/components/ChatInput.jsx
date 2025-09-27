@@ -7,8 +7,6 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   const [isWebSocketConnected, setIsWebSocketConnected] = useState(false);
   const [currentTranscript, setCurrentTranscript] = useState('');
   const [recognitionResult, setRecognitionResult] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
-  const fileInputRef = useRef(null);
 
   const isRecordingRef = useRef(false);
   const audioContextRef = useRef(null);
@@ -361,40 +359,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
     }
   };
 
-  const handleEmoji = () => {
-    alert('表情选择功能开发中...');
-  };
 
-  const handleAttachment = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      // 创建一个带文件的消息对象
-      const fileMessage = {
-        type: 'file',
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        url: URL.createObjectURL(file) // 为预览创建临时URL
-      };
-      
-      // 将文件消息与文本消息一起发送
-      if (message.trim() || file) {
-        onSendMessage(message, fileMessage);
-        setMessage('');
-        setSelectedFile(null);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = '';
-        }
-      }
-    }
-  };
 
   return (
     <>
@@ -458,30 +423,6 @@ const ChatInput = ({ onSendMessage, disabled }) => {
             <div className="transcript-preview">{currentTranscript}</div>
           )}
           <div className="input-actions">
-            <input
-              type="file"
-              ref={fileInputRef}
-              style={{ display: 'none' }}
-              onChange={handleFileChange}
-              disabled={disabled || isRecording}
-            />
-            <button
-              id="attachment-btn"
-              title="上传文件"
-              onClick={handleAttachment}
-              disabled={disabled || isRecording}
-              style={{
-                padding: '8px',
-                marginRight: '8px',
-                border: 'none',
-                background: 'none',
-                cursor: 'pointer',
-                color: '#546e7a',
-                fontSize: '18px'
-              }}
-            >
-              <i className="fas fa-paperclip"></i>
-            </button>
             <button
               id="voice-input-btn"
               title={isRecording ? "停止录音" : "语音输入"}

@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../assets/css/character-card.css';
+import { getRealAvatarUrl } from '../utils/utils.js';
 
 const CharacterCard = ({ character }) => {
   // 直接构建聊天页面URL，不保留搜索参数
   const chatUrl = `/chat/${character.id}`;
   
-  // 获取角色头像
+  // 获取角色头像，处理sessionStorage中的头像引用
   const getCharacterImage = (id) => {
     const imageMap = {
       'harry-potter': 'https://p2.ssl.qhimgs1.com/sdr/400__/t049e1c7d2ba7f49792.jpg',
@@ -13,7 +15,11 @@ const CharacterCard = ({ character }) => {
       'albert-einstein': 'https://p2.ssl.qhimgs1.com/sdr/400__/t01f405ed7c4fac3ce2.jpg',
       'marie-curie': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
     };
-    return imageMap[id] || character.avatar;
+    
+    const avatarSrc = imageMap[id] || character.avatar;
+    
+    // 使用统一的头像处理函数
+    return getRealAvatarUrl(avatarSrc);
   };
 
   return (

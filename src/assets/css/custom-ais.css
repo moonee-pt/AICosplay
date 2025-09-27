@@ -373,7 +373,7 @@
   .back-button {
     position: relative;
     align-self: flex-start;
-    margin-bottom: 0;
+    margin-top: 18px;
   }
 
   .page-header h1 {

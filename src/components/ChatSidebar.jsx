@@ -1,10 +1,13 @@
 import React from 'react';
+import '../assets/css/chat-sidebar.css';
+import { getRealAvatarUrl } from '../utils/utils.js';
 
 const ChatSidebar = ({ character, onClearChat }) => {
+  
   return (
     <div className="chat-sidebar">
       <div className="character-info">
-        <img id="character-avatar" src={character?.avatar || 'https://placehold.co/300x300/e0f7fa/000000?text=角色'} alt={character?.name || '角色'} />
+        <img id="character-avatar" src={getRealAvatarUrl(character?.avatar) || 'https://placehold.co/300x300/e0f7fa/000000?text=角色'} alt={character?.name || '角色'} />
         <h2 id="character-name">{character?.name || '角色名称'}</h2>
         <p id="character-bio" className="character-bio">{character?.bio || '角色简介'}</p>
       </div>

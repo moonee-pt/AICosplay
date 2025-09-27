@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import CustomAICreator from '../components/CustomAICreator';
 import { getCustomAIs, deleteCustomAI, addCustomAI, updateCustomAI } from '../utils/storage';
+import { getRealAvatarUrl } from '../utils/utils.js';
 import '../assets/css/custom-ais.css';
 
 const CustomAIsPage = () => {
@@ -104,8 +105,8 @@ const CustomAIsPage = () => {
             {customAIs.map((ai) => (
               <div key={ai.id} className="custom-ai-card">
                 <div className="ai-avatar">
-                  {ai.avatar ? (
-                    <img src={ai.avatar} alt={ai.name} />
+                  {getRealAvatarUrl(ai.avatar) ? (
+                    <img src={getRealAvatarUrl(ai.avatar)} alt={ai.name} />
                   ) : (
                     <div className="avatar-placeholder">
                       <i className="fas fa-user-robot"></i>

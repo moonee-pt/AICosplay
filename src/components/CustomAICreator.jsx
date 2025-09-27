@@ -32,11 +32,32 @@ const CustomAICreator = ({ onAddCustomAI, onClose, initialData }) => {
   // 当initialData存在时，加载编辑数据
   useEffect(() => {
     if (initialData) {
+      // 检查是否需要从sessionStorage恢复头像
+      let avatarToUse = initialData.avatar;
+      if (avatarToUse && typeof avatarToUse === 'string' && avatarToUse.startsWith('session:')) {
+        const avatarKey = avatarToUse.substring(8); // 移除'session:'前缀
+        const realAvatar = sessionStorage.getItem(avatarKey);
+        if (realAvatar) {
+          console.log('从sessionStorage恢复头像数据');
+          avatarToUse = realAvatar;
+          // 更新initialData中的头像，确保后续处理使用真实头像
+          const dataWithRealAvatar = {
+            ...initialData,
+            avatar: realAvatar,
+            background: initialData.background || ''
+          };
+          setCustomAI(dataWithRealAvatar);
+          setAvatarPreview(realAvatar);
+          return;
+        }
+      }
+      
+      // 普通情况
       setCustomAI({
         ...initialData,
         background: initialData.background || ''
       });
-      setAvatarPreview(initialData.avatar || defaultAvatar);
+      setAvatarPreview(avatarToUse || defaultAvatar);
     } else {
       // 重置表单
       setCustomAI({
@@ -102,10 +123,20 @@ const CustomAICreator = ({ onAddCustomAI, onClose, initialData }) => {
       // 创建预览
       const reader = new FileReader();
       reader.onload = (event) => {
-        setAvatarPreview(event.target.result);
+        const imageData = event.target.result;
+        console.log('上传的头像数据类型:', typeof imageData);
+        console.log('上传的头像数据长度:', imageData?.length);
+        
+        // 对于大文件，添加额外的内存管理逻辑
+        if (imageData.length > 1000000) { // 大于1MB的文件
+          console.warn('上传的头像文件较大，可能会影响性能');
+          // 可以在这里添加压缩图片的逻辑（可选）
+        }
+        
+        setAvatarPreview(imageData);
         setCustomAI(prev => ({
           ...prev,
-          avatar: event.target.result
+          avatar: imageData
         }));
       };
       reader.readAsDataURL(file);
@@ -159,19 +190,26 @@ const CustomAICreator = ({ onAddCustomAI, onClose, initialData }) => {
       id: initialData ? customAI.id : `custom-ai-${Date.now()}-${Math.floor(Math.random() * 1000)}`
     };
     
+    console.log('准备提交的自定义AI数据:', completeAI);
+    console.log('头像数据类型:', typeof completeAI.avatar);
+    console.log('头像数据长度:', completeAI.avatar?.length);
+    
     // 调用父组件的回调函数添加或更新自定义AI
     onAddCustomAI(completeAI);
     
-    // 重置表单
-    setCustomAI({
-      name: '',
-      instructions: '',
-      voice: '',
-      skills: [''],
-      avatar: defaultAvatar
-    });
-    setAvatarPreview(defaultAvatar);
-    setAvatarFile(null);
+    // 仅在新建模式下重置表单，编辑模式下不重置以保留用户修改
+    if (!initialData) {
+      setCustomAI({
+        name: '',
+        instructions: '',
+        voice: '',
+        skills: [''],
+        avatar: defaultAvatar,
+        background: ''
+      });
+      setAvatarPreview(defaultAvatar);
+      setAvatarFile(null);
+    }
     
     setIsSubmitting(false);
     

@@ -40,7 +40,7 @@
 }
 
 .profile-header .back-button:hover {
-  background-color: rgba(164, 212, 243, 0.982);
+  background-color: rgba(7, 7, 7, 0.982);
   transform: translateX(-3px);
 }
 
