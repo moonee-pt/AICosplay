@@ -20,7 +20,6 @@ const Footer = () => {
                         <h4>快速链接</h4>
                         <ul>
                             <li><Link to="/">首页</Link></li>
-                            <li><Link to="/characters">角色库</Link></li>
                             <li><Link to="/search">搜索</Link></li>
                             <li><Link to="/about">关于我们</Link></li>
                         </ul>
@@ -28,9 +27,9 @@ const Footer = () => {
 
                     <div className="footer-contact">
                         <h4>联系我们</h4>
-                        <p><i className="fas fa-envelope"></i> support@airoleplay.com</p>
-                        <p><i className="fas fa-phone"></i> 400-123-4567</p>
-                        <p><i className="fas fa-map-marker-alt"></i> 北京市海淀区中关村科技园</p>
+                        <p><i className="fas fa-envelope"></i> ptyycc@qq.com</p>
+                        <p><i className="fas fa-phone"></i> 18868774768 </p>
+                        <p><i className="fas fa-map-marker-alt"></i> 浙江省杭州市</p>
                     </div>
                 </div>
 

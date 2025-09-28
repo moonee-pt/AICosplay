@@ -1,28 +1,57 @@
-// 通用工具函数
+// 默认头像URL - 使用公共CDN上的默认头像
+const DEFAULT_AVATAR = 'https://ui-avatars.com/api/?name=User&background=random&color=fff&size=256';
 
-/**
- * 获取实际的头像URL，处理sessionStorage中的头像引用
- * @param {string} avatarSrc - 头像源，可以是URL、base64或sessionStorage引用
- * @returns {string} - 实际的头像URL或数据
- */
-export const getRealAvatarUrl = (avatarSrc) => {
-  if (!avatarSrc) return null;
+// 获取真实的头像URL
+export function getRealAvatarUrl(avatar) {
+  // 参数检查
+  if (!avatar) {
+    return DEFAULT_AVATAR;
+  }
   
-  // 检查是否是sessionStorage中的头像引用
-  if (typeof avatarSrc === 'string' && avatarSrc.startsWith('session:')) {
+  if (typeof avatar !== 'string') {
+    return DEFAULT_AVATAR;
+  }
+  
+  // 检查是否为session:引用格式
+  if (avatar.startsWith('session:')) {
+    const sessionKey = avatar.substring(8); // 去掉'session:'前缀
     try {
-      const avatarKey = avatarSrc.substring(8); // 移除'session:'前缀
-      const realAvatar = sessionStorage.getItem(avatarKey);
-      if (realAvatar) {
-        return realAvatar;
+      const avatarData = sessionStorage.getItem(sessionKey);
+      if (avatarData) {
+        return avatarData;
+      } else {
+        return DEFAULT_AVATAR;
       }
     } catch (error) {
-      console.error('从sessionStorage获取头像失败:', error);
+      return DEFAULT_AVATAR;
     }
   }
   
-  return avatarSrc;
-};
+  // 检查是否为data URL
+  if (avatar.startsWith('data:image/')) {
+    // 验证data URL是否有效
+    try {
+      // 创建一个简单的正则表达式来验证data URL格式
+      const dataUrlRegex = /^data:image\/(jpeg|jpg|png|gif|svg\+xml);base64,/;
+      if (dataUrlRegex.test(avatar)) {
+        return avatar;
+      } else {
+        return DEFAULT_AVATAR;
+      }
+    } catch (error) {
+      console.error('验证头像data URL失败:', error);
+      return DEFAULT_AVATAR;
+    }
+  }
+  
+  // 检查是否为普通URL
+  if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
+    return avatar;
+  }
+  
+  // 默认返回默认头像
+  return DEFAULT_AVATAR;
+}
 
 /**
  * 从sessionStorage获取头像数据
@@ -33,7 +62,6 @@ export const getAvatarData = (avatarKey) => {
   try {
     return sessionStorage.getItem(avatarKey);
   } catch (error) {
-    console.error('获取头像数据失败:', error);
     return null;
   }
 };
@@ -111,9 +139,8 @@ export const triggerUserInfoUpdate = (userInfo) => {
       detail: { userInfo }
     });
     document.dispatchEvent(event);
-    console.log('用户信息更新事件已触发');
   } catch (error) {
-    console.error('触发用户信息更新事件失败:', error);
+    // 静默处理错误
   }
 };
 

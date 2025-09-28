@@ -9,11 +9,12 @@ import Chat from './pages/Chat.jsx';
 import About from './pages/About.jsx';
 import Profile from './pages/Profile.jsx';
 import CustomAIsPage from './pages/CustomAIsPage.jsx';
+import GirlsGroupChat from './pages/GirlsGroupChat.jsx';
 
 // 创建一个包装组件来处理条件渲染
 const AppContent = () => {
   const location = useLocation();
-  const isChatPage = location.pathname.startsWith('/chat/');
+  const isChatPage = location.pathname.startsWith('/chat/') || location.pathname === '/girls-group-chat';
   const [isMobile, setIsMobile] = useState(false);
 
   // 监听屏幕宽度变化，判断是否为移动设备
@@ -48,6 +49,7 @@ const AppContent = () => {
           <Route path="/about" element={<About />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/custom-ais" element={<CustomAIsPage />} />
+          <Route path="/girls-group-chat" element={<GirlsGroupChat />} />
         </Routes>
       </main>
       {showFooter && <Footer />}

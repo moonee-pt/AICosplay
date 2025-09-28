@@ -13,7 +13,7 @@ const CharacterCard = ({ character }) => {
       'harry-potter': 'https://p2.ssl.qhimgs1.com/sdr/400__/t049e1c7d2ba7f49792.jpg',
       'sherlock-holmes': 'https://p2.ssl.qhimgs1.com/sdr/400__/t015b2d215c009f83ec.gif',
       'albert-einstein': 'https://p2.ssl.qhimgs1.com/sdr/400__/t01f405ed7c4fac3ce2.jpg',
-      'marie-curie': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+      'nezha': 'https://p2.ssl.qhimgs1.com/sdr/400__/t04c5cfb26e56a47eac.jpg'
     };
     
     const avatarSrc = imageMap[id] || character.avatar;
@@ -29,6 +29,24 @@ const CharacterCard = ({ character }) => {
       </div>
       <h3>{character.name}</h3>
       <p>{character.bio.substring(0, 100)}...</p>
+      
+      {/* 显示角色技能 */}
+      {character.skills && character.skills.length > 0 && (
+        <div className="character-skills">
+          <h4>技能:</h4>
+          <div className="skills-list">
+            {character.skills.map((skill, index) => (
+              <span 
+                key={index} 
+                className="skill-tag"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+      
       <Link 
         to={chatUrl} 
         className="btn btn-primary character-btn"

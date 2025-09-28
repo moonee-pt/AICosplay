@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import '../assets/css/custom-ai.css';
 import { previewVoice } from '../services/ttsService';
 
@@ -111,6 +111,7 @@ const CustomAICreator = ({ onAddCustomAI, onClose, initialData }) => {
 
   // 处理头像上传
   const handleAvatarUpload = (e) => {
+    console.log('开始处理头像上传');
     const file = e.target.files[0];
     if (file) {
       // 检查文件类型
@@ -119,27 +120,68 @@ const CustomAICreator = ({ onAddCustomAI, onClose, initialData }) => {
         return;
       }
       
+      // 检查文件大小（限制在5MB以内）
+      const fileSizeInMB = file.size / (1024 * 1024);
+      if (fileSizeInMB > 5) {
+        alert('图片文件不能超过5MB！');
+        return;
+      }
+      
+      console.log(`选择的图片: ${file.name}, 大小: ${fileSizeInMB.toFixed(2)} MB`);
       setAvatarFile(file);
+      
       // 创建预览
       const reader = new FileReader();
       reader.onload = (event) => {
-        const imageData = event.target.result;
-        console.log('上传的头像数据类型:', typeof imageData);
-        console.log('上传的头像数据长度:', imageData?.length);
-        
-        // 对于大文件，添加额外的内存管理逻辑
-        if (imageData.length > 1000000) { // 大于1MB的文件
-          console.warn('上传的头像文件较大，可能会影响性能');
-          // 可以在这里添加压缩图片的逻辑（可选）
+        try {
+          const imageData = event.target.result;
+          console.log('头像数据读取成功，类型:', typeof imageData);
+          
+          // 对于较大的文件，添加用户提示
+          const dataSizeInKB = imageData.length / 1024;
+          console.log('头像数据大小:', dataSizeInKB.toFixed(2), 'KB');
+          
+          if (dataSizeInKB > 1000) { // 大于1MB的文件
+            console.warn('上传的头像文件较大，可能会影响性能');
+            // 可选：自动压缩图片
+            
+            // 使用新的Image对象验证图片数据是否有效
+            const img = new Image();
+            img.onload = () => {
+              console.log('图片预览创建成功，尺寸:', img.width, 'x', img.height);
+              setAvatarPreview(imageData);
+              setCustomAI(prev => ({
+                ...prev,
+                avatar: imageData
+              }));
+            };
+            img.onerror = () => {
+              console.error('图片数据无效');
+              alert('图片文件无效，请尝试其他图片！');
+            };
+            img.src = imageData;
+          } else {
+            // 对于较小的文件，直接设置预览
+            setAvatarPreview(imageData);
+            setCustomAI(prev => ({
+              ...prev,
+              avatar: imageData
+            }));
+          }
+        } catch (error) {
+          console.error('处理头像数据时发生错误:', error);
+          alert('处理图片时发生错误，请重试！');
         }
-        
-        setAvatarPreview(imageData);
-        setCustomAI(prev => ({
-          ...prev,
-          avatar: imageData
-        }));
       };
+      
+      reader.onerror = (error) => {
+        console.error('读取图片文件失败:', error);
+        alert('读取图片文件失败，请重试！');
+      };
+      
       reader.readAsDataURL(file);
+    } else {
+      console.log('未选择文件');
     }
   };
 

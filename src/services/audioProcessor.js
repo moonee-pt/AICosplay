@@ -11,7 +11,7 @@ class AudioProcessor extends AudioWorkletProcessor {
     };
   }
 
-  process(inputs, outputs, parameters) {
+  process(inputs) {
     // 获取输入音频数据
     const inputData = inputs[0];
     if (!inputData || inputData.length === 0) {

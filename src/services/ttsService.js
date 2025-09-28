@@ -298,9 +298,6 @@ export const playAudio = async (audioBuffer, onEnded) => {
         resolve(currentAudioControl);
       });
     });
-    
-    currentAudioControl = { audioContext, source };
-    return currentAudioControl;
   } catch (error) {
     console.error('播放音频失败:', error);
     throw error;

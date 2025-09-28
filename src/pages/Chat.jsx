@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, memo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import ChatSidebar from '../components/ChatSidebar';
 import ChatHeader from '../components/ChatHeader';
 import ChatMessages from '../components/ChatMessages';
@@ -44,13 +44,7 @@ const Chat = memo(() => {
 
   // 预定义角色数据
   const charactersData = [
-    {
-      id: 'harry-potter',
-      name: '哈利波特',
-      bio: '魔法世界的年轻巫师，勇敢正直，擅长黑魔法防御术。来自霍格沃茨魔法学校的格兰芬多学院。',
-      avatar: 'https://p2.ssl.qhimgs1.com/sdr/400__/t049e1c7d2ba7f49792.jpg',
-      skills: ['魔法知识专家', '黑魔法防御', '魁地奇球员', '快速思考者']
-    },
+    {      id: 'harry-potter',      name: '哈利波特',      bio: '魔法世界的年轻巫师，勇敢正直，擅长黑魔法防御术。来自霍格沃茨魔法学校的格兰芬多学院。',      avatar: 'https://p2.ssl.qhimgs1.com/sdr/400__/t049e1c7d2ba7f49792.jpg',      skills: ['魔法知识专家', '黑魔法防御', '魁地奇球员']    },
     {
       id: 'sherlock-holmes',
       name: '夏洛克·福尔摩斯',
@@ -66,11 +60,11 @@ const Chat = memo(() => {
       skills: ['理论物理学', '创新思维', '数学', '哲学']
     },
     {
-      id: 'marie-curie',
-      name: '玛丽·居里',
-      bio: '著名物理学家和化学家，首位获得两次诺贝尔奖的科学家，对放射性研究做出了开创性贡献。',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
-      skills: ['放射性研究', '化学', '物理学', '坚韧不拔']
+      id: 'nezha',
+      name: '哪吒',
+      bio: '中国古代神话中的托塔天王李靖之子，灵珠子转世。7岁少年，三头六臂，脚踩风火轮，手持火尖枪，颈戴乾坤圈，身裹混天绫。性格顽皮机灵、嫉恶如仇，敢作敢当，重情重义。',
+      avatar: 'https://p2.ssl.qhimgs1.com/sdr/400__/t04c5cfb26e56a47eac.jpg',
+      skills: ['三头六臂', '火尖枪法', '风火轮', '降妖除魔']
     }
   ];
 
@@ -202,7 +196,7 @@ const Chat = memo(() => {
       'harry-potter': '你好！我是哈利波特。欢迎来到魔法世界！有什么我可以帮助你的吗？',
       'sherlock-holmes': '晚上好，亲爱的朋友。我是夏洛克·福尔摩斯。有什么谜题需要我帮你解决吗？',
       'albert-einstein': '你好，很高兴见到你。我是阿尔伯特·爱因斯坦。关于宇宙的奥秘，你有什么问题吗？',
-      'marie-curie': '你好，我是玛丽·居里。科学的世界充满了无限可能，你想了解些什么？'
+      'nezha': '嘿！我是哪吒！三头六臂，脚踩风火轮，手持火尖枪！你想聊点什么？要不要一起降妖除魔？哈！'
     };
 
     return [
@@ -635,10 +629,10 @@ const Chat = memo(() => {
   );
 });
 
-// 自定义父组件memo比较逻辑：仅当characterId变化时重新渲染（减少不必要渲染）
+// 修复路由参数比较逻辑，确保自定义AI创建后能正确进入聊天界面
 const chatAreEqual = (prevProps, nextProps) => {
-  // 父组件接收的props主要来自路由（useParams的characterId），故仅比较characterId
-  return prevProps.characterId === nextProps.characterId;
+  // 严格比较路由参数，确保任何变化都能触发重新渲染
+  return JSON.stringify(prevProps) === JSON.stringify(nextProps);
 };
 
 // 导出优化后的父组件（memo包裹+自定义比较逻辑）

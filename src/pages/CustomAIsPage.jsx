@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import CustomAICreator from '../components/CustomAICreator';
 import { getCustomAIs, deleteCustomAI, addCustomAI, updateCustomAI } from '../utils/storage';
 import { getRealAvatarUrl } from '../utils/utils.js';
 import '../assets/css/custom-ais.css';
 
 const CustomAIsPage = () => {
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
   const [customAIs, setCustomAIs] = useState([]);
   const [showCreator, setShowCreator] = useState(false);
   const [editingAI, setEditingAI] = useState(null);
@@ -65,6 +65,8 @@ const CustomAIsPage = () => {
       state: { customAI: ai }
     });
   };
+  
+
 
   // 点击页面其他地方时关闭下拉菜单
   useEffect(() => {
@@ -130,7 +132,10 @@ const CustomAIsPage = () => {
                   {ai.skills && ai.skills.length > 0 && (
                     <div className="ai-skills">
                       {ai.skills.slice(0, 3).map((skill, index) => (
-                        <span key={index} className="skill-tag">
+                        <span 
+                          key={index} 
+                          className="skill-tag"
+                        >
                           {skill}
                         </span>
                       ))}

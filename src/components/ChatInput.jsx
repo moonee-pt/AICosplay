@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef} from 'react';
 import CryptoJS from 'crypto-js';
 
 const ChatInput = ({ onSendMessage, disabled }) => {
@@ -6,7 +6,7 @@ const ChatInput = ({ onSendMessage, disabled }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isWebSocketConnected, setIsWebSocketConnected] = useState(false);
   const [currentTranscript, setCurrentTranscript] = useState('');
-  const [recognitionResult, setRecognitionResult] = useState('');
+  const [setRecognitionResult] = useState('');
 
   const isRecordingRef = useRef(false);
   const audioContextRef = useRef(null);

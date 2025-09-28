@@ -183,6 +183,12 @@
   .home-page > .characters-section:nth-child(3) h2::after {
     width: 90%;
   }
+  .character-skills {
+    padding: 0px;
+  }
+  .clear-current-chat-button {
+    width: 295px!important;
+  }
   .dropdown-menu {
     position: absolute;
     margin: 0;
@@ -192,6 +198,7 @@
   }
   .navbar .container {
     flex-wrap: wrap;
+    padding: 15px 8px;
   }
 
   .search-bar {

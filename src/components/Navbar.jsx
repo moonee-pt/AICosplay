@@ -53,12 +53,12 @@ const Navbar = () => {
           <div className="logo-container">
             <Link to="/" className="logo">
               <i className="fas fa-robot"></i>
-              <span className="logo-text">AI Cos</span>
+              <span className="logo-text">AI Chat</span>
             </Link>
             <div className="mobile-header-links">
               <Link to="/custom-ais" className="home-link">
                 <i className="fas fa-user-cog"></i>
-                <span>自定义AI</span>
+                <span>我的自定义AI</span>
               </Link>
               {/* 移动端：在首页旁边放用户头像 */}
               <Link 
@@ -82,6 +82,7 @@ const Navbar = () => {
               placeholder="搜索AI角色..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch(e)}
             />
             <button type="submit" onClick={handleSearch}>
               <i className="fas fa-search"></i>
@@ -92,7 +93,7 @@ const Navbar = () => {
           <div className="nav-links desktop-nav">
               <Link to="/custom-ais" className="nav-link">
                 <i className="fas fa-user-cog"></i>
-                <span>自定义AI</span>
+                <span>我的自定义AI</span>
               </Link>
             <div className="user-profile">
               <Link 

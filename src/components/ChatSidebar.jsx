@@ -12,7 +12,7 @@ const ChatSidebar = ({ character, onClearChat }) => {
         <p id="character-bio" className="character-bio">{character?.bio || '角色简介'}</p>
       </div>
       
-      <div className="character-skills">
+      <div className="character-skills" style={{marginTop: '15px'}}>
         <h3>角色技能</h3>
         <ul className="skill-list">
           {character?.skills?.map((skill, index) => {
@@ -31,7 +31,7 @@ const ChatSidebar = ({ character, onClearChat }) => {
       </div>
       
       {/* 清除当前对话按钮 */}
-      <div className="clear-chat-container">
+      <div className="clear-chat-container" style={{position: 'absolute', bottom: '0px', width: '100%', marginTop: '20px'}}>
         <button 
           className="clear-current-chat-button" 
           onClick={onClearChat}

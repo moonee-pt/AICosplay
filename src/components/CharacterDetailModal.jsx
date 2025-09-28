@@ -1,4 +1,5 @@
 import React from 'react';
+import { getRealAvatarUrl } from '../utils/utils';
 
 const CharacterDetailModal = ({ character, isOpen, onClose, onClearChat }) => {
   if (!isOpen || !character) return null;
@@ -13,7 +14,7 @@ const CharacterDetailModal = ({ character, isOpen, onClose, onClearChat }) => {
         <div className="modal-content">
           <div className="character-detail-header">
             <img 
-              src={character.avatar || 'https://placehold.co/300x300/e0f7fa/000000?text=角色'} 
+              src={getRealAvatarUrl(character.avatar || '')} 
               alt={character.name || '角色'}
               className="character-detail-avatar"
             />
@@ -40,8 +41,10 @@ const CharacterDetailModal = ({ character, isOpen, onClose, onClearChat }) => {
                 const icons = ['fas fa-book', 'fas fa-brain', 'fas fa-bullseye', 'fas fa-fire'];
                 const iconClass = icons[index % icons.length];
                 return (
-                  <li key={index}>
-                    <i className={iconClass}></i> {skill}
+                  <li key={index} className="skill-item">
+                    <div className="skill-info">
+                      <i className={iconClass}></i> {skill}
+                    </div>
                   </li>
                 );
               }) || (

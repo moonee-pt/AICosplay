@@ -94,6 +94,10 @@
     align-items: center;
 }
 
+.about-text {
+    margin-top: -60px;
+}
+
 .about-text h2 {
     font-size: 1.8rem;
     margin-bottom: 20px;
@@ -101,6 +105,7 @@
 }
 
 .about-text p {
+    width: 420px;
     margin-bottom: 20px;
     color: #666;
     line-height: 1.8;

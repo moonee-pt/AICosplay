@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../assets/css/user-profile.css';
-import { getUserInfo, saveUserInfo, getFavorites, getChatHistory, clearChatMessages, saveFavorites, clearChatHistory } from '../utils/storage';
+import { getUserInfo, saveUserInfo, getFavorites, getChatHistory, saveFavorites, clearChatHistory } from '../utils/storage';
 import { getRealAvatarUrl } from '../utils/utils.js';
 
 const Profile = () => {

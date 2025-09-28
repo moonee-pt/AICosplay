@@ -285,6 +285,7 @@
     
     /* 调整移动端标题样式，加宽以放下所有文字 */
     .logo {
+        margin-right: -20px;
         flex: 1;
         justify-content: center;
     }

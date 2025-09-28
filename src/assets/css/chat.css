@@ -48,7 +48,7 @@ main {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  margin-left: 40px;
+  margin-left: 55px;
   margin-bottom: 15px;
   object-fit: cover;
 }
@@ -172,6 +172,15 @@ main {
   font-weight: 500;
   color: #333;
   font-size: 16px;
+  display: block;
+}
+
+/* 角色副标题样式 */
+.character-subtitle-small {
+  font-size: 12px;
+  color: #666;
+  display: block;
+  margin-top: 2px;
 }
 
 /* 详情按钮 */
@@ -379,6 +388,55 @@ main {
   color: #666;
 }
 
+/* 技能项布局 */
+.character-detail-skills .skill-list li.skill-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.character-detail-skills .skill-list li.skill-item:hover {
+  background-color: #e9ecef;
+}
+
+/* 技能信息部分 */
+.character-detail-skills .skill-item .skill-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+/* 技能对应的重新开始按钮样式 */
+.clear-chat-by-skill-button {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+}
+
+.clear-chat-by-skill-button:hover {
+  background-color: #1976d2;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.clear-chat-by-skill-button:active {
+  transform: translateY(0);
+}
+
 .character-detail-skills .skill-list li i {
   color: #2196f3;
 }
@@ -525,7 +583,6 @@ main {
 /* 消息样式 */
 .message {
   display: flex;
-  max-width: 85%;
 }
 
 .message.ai {
@@ -547,6 +604,7 @@ main {
 }
 
 .message-content {
+  width: 100%; /* 用户消息默认100%宽度 */
   background-color: white;
   padding: 15px 20px;
   border-radius: 20px;
@@ -560,6 +618,11 @@ main {
 .message.user .message-content {
   background-color: #90caf9;
   color: #333;
+}
+
+/* AI消息固定为屏幕宽度的75% */
+.message.ai .message-content {
+  width: 70%;
 }
 
 .message-time {

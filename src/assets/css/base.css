@@ -60,14 +60,14 @@ body {
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #1976D2, #1565C0);
+    background: linear-gradient(135deg, #4a9ff4, #71a8e7);
     transform: translateY(-2px);
     box-shadow: 0 6px 25px rgba(33, 150, 243, 0.4);
 }
 
 .btn-secondary {
     background-color: transparent;
-    color: #90CAF9;
+    color: #10152f;
     border: 2px solid #2196F3;
 }
 

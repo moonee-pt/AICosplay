@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import CharacterDetailModal from './CharacterDetailModal';
 import { getRealAvatarUrl } from '../utils/utils.js';
 
-const ChatHeader = ({ character, isFavorited, onToggleFavorite, onEdit, onClearChat }) => {
+const ChatHeader = ({ character, isFavorited, onToggleFavorite, onEdit, onClearChat, title, subtitle, onBack }) => {
   const navigate = useNavigate();
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -25,7 +25,11 @@ const ChatHeader = ({ character, isFavorited, onToggleFavorite, onEdit, onClearC
   }, []);
 
   const handleBack = () => {
-    navigate(-1);
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
   };
 
   const toggleDetailModal = () => {
@@ -40,12 +44,27 @@ const ChatHeader = ({ character, isFavorited, onToggleFavorite, onEdit, onClearC
         </button>
         
         <div className="character-display">
-          <img 
-            src={getRealAvatarUrl(character?.avatar) || 'https://placehold.co/300x300/e0f7fa/000000?text=角色'} 
-            alt={character?.name || '角色'}
-            className="character-avatar-small"
-          />
-          <span className="character-name-small">{character?.name || '角色名称'}</span>
+          {title ? (
+            <>
+              <img 
+                src="https://placehold.co/300x300/pink/white?text=302" 
+                alt={title}
+                className="character-avatar-small"
+              />
+              <div>
+                <span className="character-name-small">302卧谈会</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <img 
+                src={getRealAvatarUrl(character?.avatar) || 'https://placehold.co/300x300/e0f7fa/000000?text=角色'} 
+                alt={character?.name || '角色'}
+                className="character-avatar-small"
+              />
+              <span className="character-name-small">{character?.name || '角色名称'}</span>
+            </>
+          )}
         </div>
         
         <button 

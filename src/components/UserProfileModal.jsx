@@ -127,6 +127,7 @@ const UserProfileModal = ({ isOpen, onClose }) => {
 
   // 处理头像上传
   const handleAvatarUpload = (e) => {
+    console.log('开始处理用户头像上传');
     const file = e.target.files[0];
     if (file) {
       // 检查文件类型
@@ -135,17 +136,56 @@ const UserProfileModal = ({ isOpen, onClose }) => {
         return;
       }
       
+      // 检查文件大小（限制在5MB以内）
+      const fileSizeInMB = file.size / (1024 * 1024);
+      if (fileSizeInMB > 5) {
+        alert('图片文件不能超过5MB！');
+        return;
+      }
+      
+      console.log(`选择的用户头像: ${file.name}, 大小: ${fileSizeInMB.toFixed(2)} MB`);
       setAvatarFile(file);
+      
       // 创建预览
       const reader = new FileReader();
       reader.onload = (event) => {
-        setAvatarPreview(event.target.result);
-        setUserInfo(prev => ({
-          ...prev,
-          avatar: event.target.result
-        }));
+        try {
+          const imageData = event.target.result;
+          console.log('用户头像数据读取成功，类型:', typeof imageData);
+          
+          // 对于较大的文件，添加用户提示
+          const dataSizeInKB = imageData.length / 1024;
+          console.log('用户头像数据大小:', dataSizeInKB.toFixed(2), 'KB');
+          
+          // 使用新的Image对象验证图片数据是否有效
+          const img = new Image();
+          img.onload = () => {
+            console.log('用户头像预览创建成功，尺寸:', img.width, 'x', img.height);
+            setAvatarPreview(imageData);
+            setUserInfo(prev => ({
+              ...prev,
+              avatar: imageData
+            }));
+          };
+          img.onerror = () => {
+            console.error('用户头像数据无效');
+            alert('图片文件无效，请尝试其他图片！');
+          };
+          img.src = imageData;
+        } catch (error) {
+          console.error('处理用户头像数据时发生错误:', error);
+          alert('处理图片时发生错误，请重试！');
+        }
       };
+      
+      reader.onerror = (error) => {
+        console.error('读取用户头像文件失败:', error);
+        alert('读取图片文件失败，请重试！');
+      };
+      
       reader.readAsDataURL(file);
+    } else {
+      console.log('未选择用户头像文件');
     }
   };
 

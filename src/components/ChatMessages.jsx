@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { textToSpeech, playAudio, stopAudio } from '../services/ttsService';
 import { getRealAvatarUrl } from '../utils/utils';
 // 导入getRealAvatarUrl函数用于处理头像URL，包括sessionStorage中的头像引用
@@ -8,7 +8,7 @@ import { getRealAvatarUrl } from '../utils/utils';
 // 2. 第191行使用该函数处理历史消息中的头像
 // 3. 第257行使用该函数处理正在输入状态的AI头像
 
-const ChatMessages = ({ messages, isTyping }) => {
+const ChatMessages = ({ messages, isTyping, characterVoice }) => {
   // 跟踪当前正在播放的消息索引
   const [playingMessage, setPlayingMessage] = useState(null);
   // 跟踪音频控制对象
@@ -176,8 +176,10 @@ const ChatMessages = ({ messages, isTyping }) => {
       setPlayingMessage(messageIndex);
       setPlayingStatus(prev => new Map(prev).set(messageIndex, true));
 
-      // 获取音频数据
-      const audioData = await textToSpeech(text);
+      // 获取音频数据，为预定义角色设置默认声音为'aisjiuxu'
+      // 从组件props中获取characterVoice，默认使用'male1'（对应aisjiuxu）
+      const voice = characterVoice || 'male1';
+      const audioData = await textToSpeech(text, voice);
       
       // 再次检查状态
       if (playingMessage !== messageIndex) {

@@ -28,8 +28,8 @@
   font-size: 16px;
   font-weight: 500;
   padding: 8px 12px;
-  margin-top: 4px;
-  margin-left: 100px;
+  margin-top: 8px;
+  /* margin-left: 100px; */
   border-radius: 20px;
   transition: all 0.3s ease;
   background-color: rgba(255, 255, 255, 0.1);
@@ -51,7 +51,6 @@
 
 /* 页面标题 */
 .profile-header h1 {
-  margin: 0;
   font-size: 24px;
   font-weight: 600;
 }
@@ -185,6 +184,10 @@
 
 /* 媒体查询 - 移动端布局调整 */
 @media (max-width: 768px) {
+  .profile-header h1{
+    margin-top: 8px;
+  }
+  
   .user-info-row {
     flex-direction: column;
     align-items: center;
