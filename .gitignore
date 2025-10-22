@@ -19,7 +19,6 @@ coverage
 
 # Production
 build
-dist
 dist-ssr
 *.local
 
